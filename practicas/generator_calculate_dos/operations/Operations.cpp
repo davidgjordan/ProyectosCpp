@@ -42,7 +42,7 @@ ostringstream Operations::getMenu(Entrada entrada[], int numIteraciones){
 res<<      "cout<<\"Elija una opcion: \"<<endl;";
 			char c[numIteraciones];
 			for (int i = 0; i < numIteraciones; ++i){
-res<<			"count<<"<<i+1<<"<<entrada[i].getOperation()<<entrada[i].getNumOperandos()<<";";
+res<<			"count<<"<<i+1<<<<entrada[i].getOperation()<<entrada[i].getNumOperandos()<<";";
 //					1 sumar2
 //  				2 restar3
 				c[i] = entrada[i].getCharOperation();
@@ -52,9 +52,7 @@ res<<			"cin.getline(opcion);";
 res<< 			"opcion();";
 					
 			
-
-res<<	"}while(opcion!="<<numIteraciones<<");";
-return res;
+	return res;
 }
 
 
