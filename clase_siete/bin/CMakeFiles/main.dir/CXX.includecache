@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/ubuntu/Desktop/ProyectosCpp/clase_siete/include/main.h
+
+/home/ubuntu/Desktop/ProyectosCpp/clase_siete/source/main.cpp
+iostream
+-
+string
+-
+cstring
+-
+../include/main.h
+/home/ubuntu/Desktop/ProyectosCpp/clase_siete/include/main.h
+
