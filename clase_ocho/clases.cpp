@@ -67,7 +67,7 @@ private:
     }
 
 
-    // sobrecargamos el operador mas
+    // sobrecargamos el operador mas es constante
     operator+( const binary &p) const {
         binary b{(char)(num+p.num )};
         return b;
