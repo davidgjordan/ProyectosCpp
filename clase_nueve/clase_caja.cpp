@@ -29,7 +29,7 @@ public:
         // porq asi guardamos en el heap 
         c1 = new caja{10};
         c2 = new caja{20};
-        s = new string{"hello0 world"};
+        s = new string{"hello world"};
         cout<<"hi cajon"<<endl;
         
     }
