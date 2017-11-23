@@ -11,9 +11,8 @@ struct caja{
 public:
 
     ~caja(){
-        
-                cout<<"bye caja"<<endl;
-            }
+        cout<<"bye caja"<<endl;
+    }
 };
 
 class cajon{
@@ -27,6 +26,7 @@ public:
 
         // ubuira sido mejor acer caja c{20}; para q se guarde en el stack
         // porq asi guardamos en el heap 
+        //CUANDO ISNTANCIAS CON NEW DEVUELVE UNA REFERENCIA DE MEMORIA A ESE OBJETO
         c1 = new caja{10};
         c2 = new caja{20};
         s = new string{"hello world"};
@@ -35,13 +35,17 @@ public:
     }
     ~cajon(){
 
-        delete c1; delete c2;delete s;
+        delete c1; 
+        delete c2;
+        delete s;
         cout<<"bye cajon"<<endl;
     }
 
-    // constructor copy
+    // constructor copy  PARA COPIAR UN OBJETO EN OTRO  **\\**
     cajon( const cajon & p){
         // cosntruimos un nuevo string porq era el q daba problemas
+
+        // EL THIS ES DE LA D DE ABAJO EN EL MAIN OSE ES ASI THIS.S THIS.C1
         s = new string{*(p.s)};
         c1 = new caja{*(p.c1)};
 
@@ -62,7 +66,9 @@ cajon *c =  new cajon();
 
 
 // cajor d es una copia de c  el cosntructor busca un costructor copia como no hay copia los bites del objeto
-cajon d = *c;
+// D LLEGA A SER EL THIS DEL CONSTRUCTOR COPY Y COMO EL COSTRUCTOR COPY NOS PIDE
+// UN VALOR POR EL & LE MANDAMOS EL VALOR DEL OBJETO C
+cajon d = *c;//     **\\**
 
 
 
