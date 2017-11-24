@@ -28,14 +28,20 @@ para trabajar con el heap tenemos q usar dos operadores  el  new pide memoria al
     
 /* EL PROGRAMA ASIGNA A UNA MEMORIA LIBRE Y DEVULVE SU DATO POR ESO IMPRIME CUALQUIER COSA */
 auto q = new int;
+cout<<"****q*****"<<endl;
+cout<<q<<endl;
 cout<<*q<<endl;
+cout<<"****q*****"<<endl;
 
 /* CUANDO EL PROGRAMA TERMINA DE CORRER EL PROGRAMA DEVUELVE LA MEMORIA PERO SI SIGUE SIGEUE OCUPANDO ESOS ESPACIOS DE MEMORIA
 POR ESO HAY Q DEVOLVERLOS ASI */
 delete p;
 delete q;
 
-
+cout<<"****delete p*****"<<endl;
+cout<<p<<endl;
+cout<<*p<<endl;
+cout<<"****delete p*****"<<endl;
 
 int * r = nullptr;
 
@@ -57,9 +63,9 @@ VERIFICCA SI EL PUNTERO ES NULL
     /* asi creadmos este objeto en la memoria  heap
     
     */
+    int n =3;
+    
     // SS ES UN STRING *
-        int n =3;
-
         // ESTE NEW ES OTRO SIRVE PARA CREAR UN ARRAY DE OBJETOS Y PARA BORRAR UN NEW [](NEW DE ARRAYS) se usa el delete []ss
         auto ss = new string[n];
 

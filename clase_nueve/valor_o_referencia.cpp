@@ -4,19 +4,20 @@ using namespace std;
 
 
 // PASO POR VALOR copia el valor de la variable original
-/* void sumar(int);
+ /* void sumar(int);
 int main(){
     int n = 4;
     sumar(n);
     cout << n << endl; //salida 4
+
     return 0;
 }
 void sumar(int x)
 {
     x++;
     cout << x << endl; //salida 5
-}
- */
+} */
+ 
 
 
 // PASO POR REFERENCIA  el metodo pide un objeto del tipo referencia de memoria &
@@ -33,25 +34,26 @@ void sumar(int x)
     variable a través de un parámetro de puntero y luego con el operador de indirección 
     podemos acceder al contenido de la variable original.
  */
-// void sumar(int*);
-// int main()
-// {
-//     int n = 4;
-//     // entonces ayq mandarle una referencia de memoria de algun objeto
-//     sumar(&n);
-//     cout << n << endl;//salida 5
-//     return 0;
-// }
-// void sumar(int *x)
-// {
-//     // se accede al valor del objeto con el asterisco
-//     *x = *x + 1;
+//  void sumar(int*);
+//  int main()
+//  {
+//      //int *n = &h;
+//      int n = 4;
+//      // entonces ayq mandarle una referencia de memoria de algun objeto
+//      sumar(&n);
+//      cout << n << endl;//salida 5
+//      return 0;
+//  }
+//  void sumar(int *x)
+//  {
+//      // se accede al valor del objeto con el asterisco
+//      *x = *x + 1;
 
-//     /* Como vemos el parámetro de sumar ahora es un puntero que recibe una dirección 
-//     de memoria en este caso le pasamos la dirección de la variable x y dentro de la 
-//     función con operador de indirección podemos acceder al contenido de la variable n. */
-//     cout << *x << endl; // salida 5
-// }
+// //     /* Como vemos el parámetro de sumar ahora es un puntero que recibe una dirección 
+// //     de memoria en este caso le pasamos la dirección de la variable x y dentro de la 
+// //     función con operador de indirección podemos acceder al contenido de la variable n. */
+//      cout << *x << endl; // salida 5
+//  }
 
 
 
@@ -63,23 +65,24 @@ void sumar(int x)
     etiqueta de otra y se declaran poniendo el operador & después del tipo de dato.
  */
 
- /* int main(){
+ /*  int main(){
 
      int n = 4;
      int &ref_n = n;
      cout << ref_n <<endl;//salida 4
-    
+     cout << &ref_n <<endl;//salida 0x7fff2e9e560c
+     
      return 0;
- } */
+ } 
 
-
+ */
  /* PASO POR REFERENCIA... CON REFERENCIAS
  
  Las referencias son una buena forma de pasar un valor a otra función sin ser por valor, 
  veamos el ejemplo anterior de paso por punteros, pero está vez usando referencias.
   */
- void sumar(int &);
- int main()
+/* void sumar(int &x);
+  int main()
  {
      int n = 4;
      sumar(n);
@@ -90,4 +93,16 @@ void sumar(int x)
  {  //cuando el parametro tiene & trabajas directamente sobre el valor
      x = x + 1;
      cout << x << endl; //salida 5
- }
+ } 
+ */
+
+
+ int main()
+ {
+    int * p = new int{8};
+ 
+     cout<<p<<endl;
+     cout<<*p<<endl;  
+     
+     return 0;
+}
