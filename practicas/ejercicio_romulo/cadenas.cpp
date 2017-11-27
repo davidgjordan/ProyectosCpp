@@ -32,50 +32,57 @@ recibe dos entradas el texto y el patron(ejemplo"*a*a") si acepater matcher o no
 no puede tener dos * seguidos
  sin usar string principalmente */
 
- #include <iostream>
+#include <iostream>
 
- using namespace std;
+using namespace std;
 
+bool isValid(const char *texto, const char *patron);
+class obj
+{
+  public:
+    int x;
+    obj() {}
+    obj(int x) : x{x} {}
+};
+void show(const obj *o);
+void show(obj *o);
 
- int main(){
+int main()
+{
 
-    char  texto [256]; 
-    cout<<"Ingrese el texto"<< endl;    
-    //cin>>*texto;
-    cin.getline(texto, 256);
-    
-    cout<<texto << endl;
+    const char *texto = "Primer Texto";
+    const char *patron = "*?i*";
+
+    const obj *t1 = new obj(10);
+    show(t1);
+
+    const *obj t2(5);
+    show(&t2);
+
+    obj *t3;
+    t3->x = 15;
+    show(t3);
+
+    // bool is_valid = isValid(texto, patron);
     return 0;
- }
+}
+bool isValid(const char *texto, const char *patron)
+{
+    cout << texto << endl;
+    cout << patron << endl;
 
- 
+    return true;
+}
 
+void show(const obj *o)
+{
+    cout << o->x << endl;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void show(obj *o)
+{
+    cout << o->x << endl;
+}
 //  ************************COMPETENCIAS*******************************
 // DISENO
 //  diseno  desarrollar un modelo-arquitectura apartir de un problema(modelar)
@@ -83,20 +90,10 @@ no puede tener dos * seguidos
 // entender la aquitectura de una solucion(entender funcion de cada elemento en un diseno)
 
 // ADMINISTRACION
-// identificacion de riesgos ( identificar disco duro lleno, validaciones faltantes, nivel del equipo un companero no cumple con sus tareas)  
+// identificacion de riesgos ( identificar disco duro lleno, validaciones faltantes, nivel del equipo un companero no cumple con sus tareas)
 // manejo de riesgos( adeamas de la capacidad de intedntificar el problema adelanterse con un plan de contingencia, solicitar el disco nuevo)
 // realiazr estimaciones( cada ves mejorar nuestra abilidad de decir cuantos pountos de esfuerzo requiere una tarea completa)
 // decowriten coding standar escritura de codigo estandares( ver reglas como equipo de trabajo )
 // identificar la causa de bug de codigo(como soluciona el bug o como determias porq pas ael problema aislar el bug)
 // codereview revisar la calidad del codigo (cogigo cruzado , o mandar nuestro codigo
-                // regla 1 codign standar, regla 2 diseno arquitectura como quedamos esqcribir el codigo)
-
-
-
-
-
-
-
-
-
-
+// regla 1 codign standar, regla 2 diseno arquitectura como quedamos esqcribir el codigo)
