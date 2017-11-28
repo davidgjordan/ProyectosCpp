@@ -5,8 +5,11 @@ using namespace std;
 
 bool isValid(const char *texto, const char *patron);
 bool isPatronValid(const char *patron);
+bool textoMayorAPatron(const char * patron, const char * texto);
 bool hayAsterisco(const char* patron, const char * texto, int countPatron , int countTexto );
-bool segmentValid(const char * patron, const char * texto, int countPatron , int countTexto );
+bool existeLetraEnElTexto(const char * patron, const char * texto, int countPatron , int *countTexto );
+bool isSegmentValid(const char * patron, const char * texto, int countPatron , int countTexto );
+
 
 int main()
 {
@@ -42,18 +45,123 @@ bool isValid(const char *texto, const char *patron){
     cout << (patron+1) << endl;     //?x?* 
     cout << *(patron+1)<< endl;     //? 
     cout <<"************" << endl; */
-    if(isPatronValid(patron) ){
+    if( isPatronValid(patron) && textoMayorAPatron(patron, texto)){//falta comprobar q si la ultima letra del patron es la misma q del texto
         //cout<<(int)(*(patron+2))<<" is valid"<<endl;
         int countPatron=0;
-        int countTexto=0;
-        
+        int countTexto=0;   
         while(*patron){
-            //lo q importa son las letras y verifico si su n-1 es ? y su n-2 es *
             //si es letra
             if((int)(*patron) >= 95 && (int)(*patron) <= 122){
-                cout<<*patron<<"Es letra"<<endl;
-                //recorer la cadena para verificar si existe la letra
-                while(*texto){ 
+                // existeLetra?
+                if(existeLetraEnElTexto(patron, texto , countPatron, &countTexto)){
+                    *(texto+=countTexto);
+                    //verifico los antecesores del patron y los antecesores del texto
+                    // si el antecesor del patron n-1 es una letra entoces verifico q sea igual al del texto n-1
+                    if(isSegmentValid(patron, texto , countPatron, countTexto)){
+                        //seguimos iterando
+                        countPatron=0;
+                        countTexto=0;   
+                    }else{//si no es un segmento valido
+                        return false;
+                    }
+                    cout<<countTexto<<" -->countTexto"<<endl;
+                    cout<<countPatron<<" -->countPatron"<<endl;
+                    cout<<texto<<" -->texto"<<endl;
+                    
+                }else{//si la letra no existe
+                    return false;
+                } 
+            }
+
+            countPatron++;
+            *(patron++);
+        }
+    }else{
+        return false;
+    }
+
+    return false;
+}
+
+bool isPatronValid(const char *patron){
+    while(*patron){
+        if(*patron == '*' && *patron == *(patron+1)){
+            return false;
+        }
+        *(patron++);
+    } 
+    return true;        
+}
+
+bool textoMayorAPatron(const char * patron, const char * texto){
+    while(*texto){//recorro el texto
+        if(!(*patron)){//si ya no hay datos en patron es true el texto es mas largo
+            return true;
+        }
+        *(patron+=1);        
+        *(texto+=1);            
+    }
+    return false;
+}
+
+bool hayAsterisco(const char * patron, const char * texto, int countPatron , int countTexto ){
+
+    for(int i=countPatron; i>=0;i--){
+       //si hay asterisco en las pociciones anteriores
+        if(patron[-i] == '*'){
+            //cout<<patron[-i]<<endl;            
+            return true;
+        }
+    }
+    cout<<"no hay asterisco"<<endl;            
+    return false;
+}
+
+
+bool existeLetraEnElTexto(const char * patron, const char * texto, int countPatron , int *countTexto ){
+    
+    bool res = false;
+    while(*texto){
+       // cout<<*texto<<endl;
+        //cout<<*patron<<endl;
+        if(* texto == *patron){
+            
+            res = true;
+            break;
+        }
+        *countTexto+=1;
+        *(texto+=1);
+    }
+    //cout<<countTexto<<endl;
+    
+    return res;
+}
+
+bool isSegmentValid(const char * patron, const char * texto, int countPatron , int countTexto ){
+
+    bool res= false;
+
+    if( countPatron > countTexto ){
+        res = false;
+    }else if(countPatron == countTexto){
+        res = true;
+    }else{
+        //si el tamano del patron es menor y hay asterisco
+        // si el antecesor del patron n-1 es una letra entoces verifico q sea igual al del texto n-1        
+        if( hayAsterisco(patron, texto, countPatron , countTexto)/*  || patron[-1] == texto[-1] || patron[1] == texto[1] */){
+            res = true;
+        }else{
+            res= false;
+        }
+    }
+    return res;
+}
+
+
+
+
+
+/*  while(*texto){ 
                     if(*patron == *texto ){
                         //tal ves todas estas comprobaciones se podrian acer en un metodo
                         if( (countPatron == countTexto) ||( countPatron < countTexto && hayAsterisco(patron, texto,countPatron, countTexto) )  ){
@@ -69,57 +177,7 @@ bool isValid(const char *texto, const char *patron){
                     }
                         countTexto++;
                         *(texto++);
-                }
-
-                // return true;   
-            }
-
-            countPatron++;
-            *(patron++);
-        }
-
-        return true;
-
-    }else{
-        return false;
-    }
-
-    return true;
-}
-
-bool isPatronValid(const char *patron){
-    while(*patron){
-        if(*patron == '*' && *patron == *(patron+1)){
-            return false;
-        }
-        *(patron++);
-    } 
-    return true;        
-}
-
-bool hayAsterisco(const char * patron, const char * texto, int countPatron , int countTexto ){
-
-    for(int i=countPatron; i>=0;i--){
-       //si hay asterisco en las pociciones anteriores
-        if(patron[-i] == '*'){
-            cout<<patron[-i]<<endl;            
-            return true;
-        }
-    }
-    cout<<"no hay asterisco"<<endl;            
-    return false;
-}
-
-bool segmentValid(const char * patron, const char * texto, int countPatron , int countTexto ){
-    return true;
-}
-
-
-
-
-
-
-
+                } */
 
 
 
