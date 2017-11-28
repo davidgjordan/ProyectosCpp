@@ -5,37 +5,12 @@ using namespace std;
 
 bool isValid(const char *texto, const char *patron);
 bool isPatronValid(const char *patron);
-bool hayAsterisco(const char * patron, const char * texto, int countPatron , int countTexto );
-
-class obj
-{
-  public:
-    int x;
-    obj() {}
-    obj(int x) : x{x} {}
-};
-
-
-void show(const obj *o);
-void show1(obj *o);
+bool hayAsterisco(const char* patron, const char * texto, int countPatron , int countTexto );
+bool segmentValid(const char * patron, const char * texto, int countPatron , int countTexto );
 
 int main()
 {
 
-    
-    /*  const obj *t1 = new obj(10);
-    show(t1); //t1 = &t1[0]
-    cout << "**************************" << endl; 
-    
-    const obj t2(5);
-    show(&t2);
-    
-    cout << "**************************" << endl; 
-    obj t3;
-    t3.x = 15;
-    show1(&t3); */
-    
-    // &texto[0], patron SON IGUALES
     
     const char *texto = "primer texto hola como estas";
     auto *patron = "*?x?*";
@@ -80,26 +55,26 @@ bool isValid(const char *texto, const char *patron){
                 //recorer la cadena para verificar si existe la letra
                 while(*texto){ 
                     if(*patron == *texto ){
-
-                        if( (countPatron == countTexto) || countPatron < countTexto  ){
-                            //esta bien
-                            cout<<"entre"<<endl;
+                        //tal ves todas estas comprobaciones se podrian acer en un metodo
+                        if( (countPatron == countTexto) ||( countPatron < countTexto && hayAsterisco(patron, texto,countPatron, countTexto) )  ){
+                            break;
                         }else{
                             return false;
                         }
                         countTexto=0;
                         countPatron=0;
-                    }else{
+                     //si ya recorrio toda la cadena y no encontro la letra del patron
+                    }else if(*texto == nullptr ){
+                            return false;                        
+                    }
                         countTexto++;
                         *(texto++);
-                    }
                 }
 
                 // return true;   
             }
 
             countPatron++;
-
             *(patron++);
         }
 
@@ -122,23 +97,39 @@ bool isPatronValid(const char *patron){
     return true;        
 }
 
-bool hayAsterisco(const char * patron, const char * texto, const char * countPatron , const char * countTexto ){
-    cout<<patron<<endl;
-    cout<<texto<<endl;
-    cout<<countPatron<<endl;
-    cout<<countTexto<<endl;
+bool hayAsterisco(const char * patron, const char * texto, int countPatron , int countTexto ){
 
+    for(int i=countPatron; i>=0;i--){
+       //si hay asterisco en las pociciones anteriores
+        if(patron[-i] == '*'){
+            cout<<patron[-i]<<endl;            
+            return true;
+        }
+    }
+    cout<<"no hay asterisco"<<endl;            
+    return false;
+}
+
+bool segmentValid(const char * patron, const char * texto, int countPatron , int countTexto ){
     return true;
 }
 
 
-void show(const obj *o){
-    cout << o->x << endl;
-}
 
-void show1(obj *o){
-    cout << o->x << endl;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //  ************************COMPETENCIAS*******************************
 // DISENO
 //  diseno  desarrollar un modelo-arquitectura apartir de un problema(modelar)
