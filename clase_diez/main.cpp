@@ -141,6 +141,9 @@ int main(){
 
     persona q{"a","b",1};
 
+
+    //aqui aplica semantiddca de movida apunta q a los punteros del objeto de getpersona y pone a null los valosres de
+    //degetpersona para reultilizarlos
     q = getPersona();
     q.print();
     // en una clase por defecto se crea constructor " copia operador =  constructor de movida 
