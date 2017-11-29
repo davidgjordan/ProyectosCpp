@@ -18,6 +18,7 @@ public:
         this->ln = new_string(ln);
     }
     ~persona(){
+        cout<<"bye"<<endl;
         delete []fn;
         delete []ln;
     }
@@ -38,7 +39,8 @@ public:
         id = p.id;
         fn= new_string(p.fn);
         ln= new_string(p.ln);
-
+        cout<<"OP=\n";
+        
         return *this;
     }
     bool  operator==(const persona& p){
@@ -51,6 +53,21 @@ void print() const{
     cout<<ln<<endl;
     cout<<id<<endl;
 }
+// opeador de movida  se tiene  q mantener talbien el de =
+persona & operator=( persona &&p){ //es un rvalue reference puede ser modificada en este tipo de llamadas
+
+        if(&p == this){
+            return *this;
+        }
+        // si quiero robarme la implementacion de la p
+        id = p.id;
+        fn = p.fn;
+        ln = p.ln;
+        p.fn = nullptr;
+        p.ln = nullptr;
+        cout<<"OP=move"<<endl;
+}
+
 private:
     //todos loe metodos reciben un this los estaticos no por eso no 
     //pueden acceder a los metodos de las clases    
@@ -64,9 +81,18 @@ private:
     }
 };
 
+
+persona getPersona();
+persona getPersona(){
+    
+    
+    persona p{"carlos","canedo", 572};
+    return p;
+}
+
 int main(){
 
-    //variabbels estane en memoria de lectura nombre ras
+    /* //variabbels estane en memoria de lectura nombre ras
     persona p1{"pedro", "ras",34};
     //p1.print();
 
@@ -110,7 +136,18 @@ int main(){
         cout<<"iguales"<<endl;
     }else{
         cout<<"diferentes"<<endl;        
-    }
+    } */
+
+
+    persona q{"a","b",1};
+
+    q = getPersona();
+    q.print();
     // en una clase por defecto se crea constructor " copia operador =  constructor de movida 
     return 0;
 }
+// SEMANTICA DE MOVIDA 
+//rvalue referecias
+int a = 2;
+int b       =  a ;
+// l value  r value  a no cambia de valor es constante
