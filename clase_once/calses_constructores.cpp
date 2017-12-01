@@ -42,7 +42,7 @@ public:
         return *this;
     }
 
-    // O NSTRUCTOR COPIA DE MOVIDA 
+    // cONSTRUCTOR COPIA DE MOVIDA 
     //dicen q es un rvalue reference significa q src al salir sera modificada
     X(X&& src) :p (src.p){ //this y src apuntan al mismo asta q agamos esto
         src.p = nullptr;

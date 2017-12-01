@@ -10,6 +10,7 @@ LA RELACION ENTRE VARIABLES Y SU REFERENCIA ES INMUTABLE
 
 void intercambiar(int &a, int &b);
 int& hello();
+int* hello2();
 
 int main(){
 		
@@ -30,8 +31,8 @@ int main(){
 
 
 
-	int &r = hello();
-	cout << r << "\n";*/
+	int *r = hello2();
+	cout << *r << "\n";
 	
 	return 0;
 
@@ -47,9 +48,17 @@ void intercambiar(int &x , int &y){
 
 int& hello(){
 	int x = 8;
-	return x;
+	int &y = x;
+	
+	return y;
 }
+int* hello2(){
+	int x = 9;
+	int *y = &x;
+	
+	return y;
 
+}
 /*
 
 
