@@ -31,8 +31,8 @@ int main(){
 	f();*/
 
 
-	auto f = factorial(3);
-	cout << f << "\n";
+	auto fac = factorial(3);
+	cout << fac << "\n";
 
 
 	h(100000);
