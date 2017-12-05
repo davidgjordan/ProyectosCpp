@@ -5,6 +5,7 @@
 using namespace std;
 
 
+// VOLVERLA DOBLEMENTE ENLAZADA
 
 struct SllNode{
 public:
@@ -12,17 +13,14 @@ public:
 	SllNode * next;
 	SllNode * previous;
 	// SllNode(){
-
 	// }
 	~SllNode(){
  		//cout<<"entre SllNode"<<endl;
-
 }
 
 };
 
 struct StringLinkedList{
-	
 public:
 	SllNode * first = nullptr;
 	SllNode * last/*ultimo*/ = nullptr;
@@ -34,7 +32,6 @@ public:
 			first = last = nn; 
 			return *this;
 		}
-
 		last->next = nn;
 		nn->previous = last;
 		last = nn;
@@ -80,7 +77,6 @@ public:
 		 	aux = aux->previous ;
 		 }
  	}
- 
 
  	~StringLinkedList(){
  		auto aux = first;
@@ -92,7 +88,6 @@ public:
  		}
  		//cout<<"entre StringLinkedList"<<endl;
  	}
-
 
 	 static char * copy(const char * s){
 		auto len = strlen(s);
@@ -133,11 +128,11 @@ public:
 	 	auto aux = src.first;
 			//src = nullptr;
 		while(aux){
-	 		auto auxN = aux->next;
+	 		auto auxNdo = aux->next;
 			push_back(aux->str);
 			 aux->str =  nullptr;
  			 aux = nullptr;
-			aux = auxN;
+			aux = auxNdo;
 		}
 		cout<<"entre CONSTRUCTOR copia de movida "<<endl;
 
@@ -152,109 +147,91 @@ public:
         this->~StringLinkedList();
         auto aux = src.first;
 		while(aux){
-	 		auto auxN = aux->next;
+	 		auto auxNo = aux->next;
 			push_back(aux->str);
 			 aux->str =  nullptr;
  			 aux = nullptr;
-			aux = auxN;
+			aux = auxNo;
 		}
 		cout<<"OPERADOR = DE MOVIDA "<<endl;
 		return *this;
     }
 
 
-// AUMENTAR EL CONSTRUCTOR SIN PARAMETROS
+//  CONSTRUCTOR SIN PARAMETROS
 	 StringLinkedList(){
 	 }
-// VOLVERLA DOBLEMENTE ENLAZADA
-
 
 
 // VOID REMOVE(CONST CHAR * S)  TODOS LOS ELEMENTOS IGUALES A ESTA CADENA
 	 void remove(const char *c){
+		 int i = 0;
 	 	if(first == nullptr){
 	 		cout<<"lista vacia"<<endl;
 	 	}else{
 		 	auto aux = first;
-		 	
+			 				
 		 	while(aux){
+		 		auto auxNo =  aux->next;
 		 		if ( strcmp(aux->str , c) == 0)
 		 		{	
 		 			if(aux->next == nullptr && aux->previous == nullptr ){
 		 				aux->str = nullptr;
 		 				aux = nullptr;
-	 					cout<<"1"<<endl;
-
-		 				break;
 		 			}else if(aux->next != nullptr && aux->previous == nullptr ){
 		 				first = aux->next;
 		 				aux->next->previous = nullptr;
 		 				aux->str = nullptr;
 		 				aux = nullptr;		 				
-	 					cout<<"2"<<endl;
-
 		 			}else if(aux->next == nullptr && aux->previous != nullptr){
 		 				last = aux->previous;
 		 				aux->previous->next = nullptr;
 		 				aux->str = nullptr;
 		 				aux = nullptr;
-	 					cout<<"3"<<endl;
-
 		 			}else{
 		 				aux->previous->next = aux->next;
 			 			aux->next->previous = aux->previous; 
 			 			aux->str = nullptr;
 			 			aux = nullptr;
-	 					cout<<"4"<<endl;
-
-			 			break;
-
 		 			}
-		 			
 		 		}
-	 			if(aux->next){
-	 				cout<<"entre while  " <<endl;
-
-		 			aux = aux->next;
-
-	 			}
-
+					 aux = auxNo;
 	 		}
 	 	}
-	 	
-
 	 }
 };
 
-
-
 int main(){
-
-
-
 	StringLinkedList sll;
 	sll.push_back("uno")
 	.push_back("dos")
-	.push_back("tres");
+	.push_back("tres")
+	.push_back("cuatro")
+	.push_back("cinco")
+	.push_back("dos")
+	.push_back("seis");;
+	cout<<"****************print******************"<<endl;
 	sll.print();
+	cout<<"****************fin - print******************"<<endl<<endl;
 	// cout<<"reverse*************"<<endl;
 	// sll.print_reverse();
-	sll.remove("dos");
-
+	char * world = "dos";
+	cout<<"****************remove - "<<world<< " *****print****" <<endl;
+	sll.remove(world);
 	sll.print();
+	cout<<"****************fin - remove - print******************"<<endl<<endl;	
 
-	
+	cout<<"****************print - reverse ******************"<<endl;
+	sll.print_reverse();
+	cout<<"****************fin - print******************"<<endl<<endl;	
+
 	// StringLinkedList sll3 = sll; //constructor copia
 	// //sll3 = sll;
 	// // sll3.print();
-
 	// StringLinkedList sll2 = move(sll);
 	// //sll2.print();
-
-
 	// sll.print();
 	// cout<<"entre "<<sll.last->str <<endl;
-
 	//StringLinkedList sll4{ new SllNode() , new SllNode()};
     return 0;
 }
