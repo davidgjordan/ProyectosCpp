@@ -123,6 +123,7 @@ public:
 		cout<<"entre operator= "<<endl;
 	 	return *this;
 	 }
+	 
 // EL CONSTRUCTOR copia de movida
 	 StringLinkedList(StringLinkedList && src){
 	 	auto aux = src.first;

@@ -45,8 +45,8 @@ public:
     // cONSTRUCTOR COPIA DE MOVIDA 
     //dicen q es un rvalue reference significa q src al 
     //salir sera modificada
-    X(X&& src) :p (src.p){ //this y src apuntan al mismo asta q 
-                            //agamos esto
+    X(X&& src) :p (src.p){ //this y src apuntan al mismo hasta q 
+                            //hagamos esto
         src.p = nullptr;
     }
 
@@ -99,9 +99,9 @@ clock_t z1 = clock();
     STRUC P {
         STRING NAME;
 
-        P get)_{
-            P p {"hola"};
-            returnp;
+        P get(){
+            P   p {"hola"};
+            return p;
         }
     }
 
