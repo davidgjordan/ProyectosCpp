@@ -4,10 +4,7 @@
 
 using namespace std;
 
-//doomsday wed 14 2 16
-
 struct trienode{
-
 	char * data;
 	char * key;
 	trienode * children[26];//albabeto de 26 palabras
@@ -18,7 +15,6 @@ public:
 	~trienode(){
 		delete data;
 		delete key;
-
 	}
 };
 
@@ -47,10 +43,8 @@ class TRIE{
 				set_data(root, v, k);
 				return;
 			}
-				auto len = strlen(k);
-
+			auto len = strlen(k);
 			auto index = *k - 'a';
-			//era sin el & trienode *
 			auto & e = root.children[index];
 			if(e == nullptr){
 				e = new trienode();
@@ -97,7 +91,6 @@ class TRIE{
 		
 		}
 
-
 		void print_all(const trienode & n)const{
 			if(n.data != nullptr){
 				 cout<<n.key<<" -  ";
@@ -131,33 +124,18 @@ class TRIE{
 				 	cout<<n.key<<" - "<<n.data<<endl;
 				 }
 
-				 //comprobamos q key contenga s
 			}else{
 				for (int i = 0; i < 26; ++i){
 
 					if (n.children[i] != nullptr){//cout<<(char) (i + 'a');
-				 		//cout<<"entro if 3";
-						//
 						print_prefix_p(*n.children[i], s,tams);
-
 					}
 				}
 			}
 		}
-
 };
 
-
-
-//PRINT _PREFIX("GALL");
-//implementar q ke damos perro y da dog y otro q 
-//dammos una letra y tiene q imprimir todas las q empiezan con eso 
-
-
 int main(){
-
-// estructura de datos trie para allmacenar texto
-
 
 	TRIE X;//o(n)  n elementos de la palabra
 
@@ -165,19 +143,12 @@ int main(){
 	add("gato", "cat").
 	add("pato", "duck").
 	add("gallo", "chicken").
-	add("gallina", "hen").
-	add("pez", "fish").
-	add("gallina", "hen").
-	add("raton st", "mice");
+	add("gallina", "hen");
+
 
 
 	X.print_prefix("p");
 
-
-	// if(auto n = X.find("raton"); n!= nullptr){
-	// 	//cout<<n<<endl;
-
-	// }
 
 	return 0;
 }

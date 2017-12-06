@@ -8,7 +8,7 @@ void add_user(){
 
 }
 
-        void add_account(){
+        void add_account(){//anadir cuenta
 
         }
 

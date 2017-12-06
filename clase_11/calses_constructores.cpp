@@ -31,7 +31,7 @@ public:
     X& operator=(const  X & src){
         if(&src== this){
             return *this;
-        }//es ley
+        }
 
         this->~X();
         p = new char[N];
@@ -42,7 +42,7 @@ public:
         return *this;
     }
 
-    // cONSTRUCTOR COPIA DE MOVIDA 
+    //CONSTRUCTOR COPIA DE MOVIDA 
     //dicen q es un rvalue reference significa q src al 
     //salir sera modificada
     X(X&& src) :p (src.p){ //this y src apuntan al mismo hasta q 

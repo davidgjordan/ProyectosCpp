@@ -82,9 +82,6 @@ int main(int argc, char const *argv[])
 
 
 	//strcmp comparar cadenas
-
-
-
 	/*auto s = "bolivia";
 	auto a = "argentina";
 	auto c = "brasil";
@@ -93,31 +90,22 @@ int main(int argc, char const *argv[])
 	cout<<strcmp(s,a)<<endl;*/
 	//CERO SI SON IUGIALES
 	//MAYOR A CERO SI LA PRIMERA ES MAYOR A LA SEGUNDA
-	//MENOR A CERO SI LA PRIMERA ES MENOR A CERO
-
-
-
-
-
+	//MENOR A CERO SI LA PRIMERA ES MENOR A segunda
 
 	/*strncmp  solo compara asta los 6 primeros caracteres*/
-	//todas osn ede la luibreria dek c
+	//todas son de la libreria de c
 	/*auto b1 = "boliviano";
 	auto b2 = "boliviana";
-
 	cout<<strncmp(b1,b2,7)<<endl;*/
 
 	/*es una alias a un aclase de basec string  otra es wstring otra wstring*/
 	//cuando se ace asi ya estamos declarando un objeto y esta guardada en el stack
 	//y se destruye cuando se termina el metodo
 	string s;//esto ya es una cadena vacia  INTERNAMENTE SON CONST CHAR *
-
 	string s2 = "hello world";
-
 	//asi estamos accediendo a su constructor de la clase
 	//esta es la sugerida para usarse
 	string s3 = {"Hello world 3"}; 
-
 	string s4("hello world 4");
 
 
