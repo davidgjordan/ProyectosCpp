@@ -19,11 +19,12 @@ using namespace std;
       strcat(p, c); 
     }
      void append(int c){
-      char  Cadena[10];  // Se declara la cadena, donde almacenaremos el valor de tipo int
+      char  Cadena[15];  // Se declara la cadena, donde almacenaremos el valor de tipo int
            // Éste será el valor que pasaremos a la cadena
       sprintf(Cadena, "%d", c);  // De este modo se copia el valor de 'Num' a la cadena 'Cadena'
       //printf("%s", Cadena);
       strcat(p, Cadena);
+
 
     }
 
