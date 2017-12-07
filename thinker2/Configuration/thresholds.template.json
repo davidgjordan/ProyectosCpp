@@ -1,0 +1,26 @@
+{
+    "filter_by_columns": {
+        "columns": [6, 7, 8, 9, 10, 12, 13, 14, 15, 16],
+        "options": ["only_this", "exclude_this"],
+        "operation": "only_this"
+    },
+    "exclude_constants": true,
+    "filter_by_value": {
+        "value": 20,
+        "options": ["greater_equal", "less_equal"],
+        "operation": "greater_equal"
+    },
+    "filter_by_ranges_values": {
+        "ranges": [
+            {
+                "min": 10,
+                "max": 20
+            }
+        ]
+    },
+    "filter_top_change_columns": 10,
+    "filter_times_column_change_value": {
+        "value": 20,
+        "operation": "greater_equal"
+    }
+}
