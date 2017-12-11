@@ -317,7 +317,7 @@ public:
             strcpy(pAux, (const char *)p);
             strcat(pAux,(const char *)" ");
             strcat(pAux,src);
-            delete p;
+            delete p; 
             
             p = new char[len+1];
             strcpy(p,(const char *)pAux);
