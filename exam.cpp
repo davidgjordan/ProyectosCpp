@@ -226,13 +226,13 @@ public:
 
         int getMayorFrecuencia(){
             auto aux = first;
-            auto aux2 = first;
+            //auto aux2 = first;
             int frecuenciaAux = aux->frecuencia;
             while(aux != nullptr){
                 if(aux->next != nullptr){    
                     if(frecuenciaAux < aux->next->frecuencia){
                         frecuenciaAux = aux->next->frecuencia;
-                        aux2 = aux;
+                        //aux2 = aux;
                     }
                 }
                 aux = aux->next;
@@ -292,8 +292,11 @@ public:
 class text_processor{
 public:
     char * p;
-    StringLinkedList sll;
-    StringLinkedList sllOrder;
+    StringLinkedList sll;//todas las palabras
+    StringLinkedList sllOrder;//mayortes o menores
+
+    //char *p[1000];
+
 
     public :
         text_processor(const char *src){
@@ -308,12 +311,14 @@ public:
             delete p;
         }
         text_processor & add_word(const char * src){
-            auto len = strlen(p)+strlen(src);
+        
+            auto len = strlen(p)+strlen(src)+strlen(" ");
             auto pAux = new char[len+1];
             strcpy(pAux, (const char *)p);
+            strcat(pAux,(const char *)" ");
             strcat(pAux,src);
             delete p;
-
+            
             p = new char[len+1];
             strcpy(p,(const char *)pAux);
 
@@ -461,7 +466,7 @@ int main()
                  ts.print_all_frequencies();
 
                  cout<<"ts.add_word(asus).add_word(asus).add_word(asus).add_word(asus).add_word(asus).add_word(asus)"<<endl;
-                 ts.add_word(" asus").add_word(" asus").add_word(" asus").add_word(" asus").add_word(" asus").add_word(" asus") ;
+                 ts.add_word("asus").add_word("asus").add_word("asus").add_word("asus").add_word("asus").add_word("asus").add_word("the") ;
                 // cout << "*****************\n";
                 ts.print_all_frequencies();
                 /* should print something like:
