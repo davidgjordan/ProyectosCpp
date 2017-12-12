@@ -145,12 +145,15 @@ class text_processor{
         }
     private:
         existe(palabra p[],  char * c){
+                cout<<"entre"<<endl;
 
             for (int i = 0; i <100; ++i)
             {
+                cout<<"entre 2"<<endl;
+
                 cout<<p[i].getPal()<<endl;
             }
-            return true;
+            return false;
         }
 
 };
