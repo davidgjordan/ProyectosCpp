@@ -1,0 +1,21 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
+PROJECT(prueba)
+
+ADD_COMPILE_OPTIONS(-g -std=c++11)
+
+FIND_PACKAGE(X11 REQUIRED)
+
+INCLUDE_DIRECTORIES(include)
+
+INCLUDE_DIRECTORIES(ThirdParty/jsonlib)
+INCLUDE_DIRECTORIES(${X11_INCLUDE_DIR})
+
+
+SET(src_program 
+		source/main.cpp  
+		source/PythonByHand.cpp  
+	)
+
+ADD_EXECUTABLE(prueba ${src_program})
+
+TARGET_LINK_LIBRARIES(prueba)

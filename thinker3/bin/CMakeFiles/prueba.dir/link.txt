@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/prueba.dir/source/main.cpp.o CMakeFiles/prueba.dir/source/PythonByHand.cpp.o  -o prueba -rdynamic 
