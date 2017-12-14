@@ -1,7 +1,0 @@
-{
-    "by_columns": {
-        "columns": [1, 2, 3, 4],
-        "options": ["consider", "exclude"],
-        "operation": "consider"
-    }
-}
