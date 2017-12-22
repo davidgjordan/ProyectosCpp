@@ -10,9 +10,10 @@
 # define  END;
 # undef true  // desdeinimos true le quitamos el valor
 #define true 0
-#define FOR_EACH(name , arr,n)\
+#define FOR_EACH(__i , arr,n)\
         for(int __x=0;__x<n;__x++){\
-            auto name =  arr[__x];
+            auto __i =  arr[__x];\
+            __i =  GET_ABS(arr[__x]);
 #define END_FOR_EACH }
             
             // GET_ABS(arr[__x])\
@@ -35,7 +36,8 @@ int  main(){
 
         int x []={1,-2,3};
         FOR_EACH(i,x,3)
-        cout<<i<<endl;
+
+            cout<<i<<endl;
 
         END_FOR_EACH
         

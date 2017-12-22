@@ -4,6 +4,7 @@
         "ostream": "cpp",
         "system_error": "cpp",
         "type_traits": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "ctime": "cpp"
     }
 }
