@@ -23,6 +23,8 @@ class IInterface : public virtual Base
 //********************************INI OBJECT**********************************************
 class Object : public virtual Base
 {
+  public:
+    ~Object() {}
     string toString() const override
     {
         char aux[32];
@@ -39,34 +41,6 @@ class Object : public virtual Base
     }
 };
 //**********************************ENDO OBJECT********************************************
-
-//********************************INI CI**********************************************
-class CI : public Object
-{
-    int nit;
-    string city;
-
-  public:
-    CI(const int &i, const string &s) : nit{i}, city{s} {}
-    string toString() const override
-    {
-        char aux[32];
-        sprintf(aux, "CI@%p", this); //llenamos a la variable aux
-        return aux;
-    }
-    bool equals(const Base &s) const override
-    {
-        const CI &aux = dynamic_cast<const CI &>(s);
-        return nit == aux.nit;
-    }
-    size_t getHashCode() const override
-    {
-        std::hash<int> aux;
-        return aux(nit);
-    }
-};
-//********************************END CI**********************************************
-
 //********************************INI ICOMPARABLE**********************************************
 class IComparable : public virtual IInterface
 {
@@ -75,12 +49,21 @@ class IComparable : public virtual IInterface
 };
 //********************************END ICOMPARABLE**********************************************
 
+//********************************INI ICOMPARATOR**********************************************
+class IComparator : public virtual IInterface
+{
+  public:
+    virtual int compare(Object *nit, Object *key) const = 0;
+};
+//********************************END COMPARATOR**********************************************
+
 //********************************INI STRING**********************************************
 class String : public virtual Object, public virtual IComparable
 {
     string str;
 
   public:
+    ~String() {}
     String(const string &s) : str{s}
     {
     }
@@ -109,9 +92,11 @@ class String : public virtual Object, public virtual IComparable
 //********************************INI INTEGER**********************************************
 class Integer : public virtual Object, public virtual IComparable
 {
+  public:
     int i;
 
   public:
+    ~Integer() {}
     Integer(const int &s) : i{s}
     {
     }
@@ -137,24 +122,48 @@ class Integer : public virtual Object, public virtual IComparable
 };
 //********************************END ITNEGER**********************************************
 
-//********************************INI ICOMPARATOR**********************************************
-class IComparator : public virtual IInterface
+//********************************INI CI**********************************************
+class CI : public Object
 {
-    virtual int compare(Object *nit, Object *key) const = 0;
+  public:
+    int nit;
+    string city;
+
+  public:
+    ~CI() {}
+    CI(const int &i, const string &s) : nit{i}, city{s} {}
+    string toString() const override
+    {
+        char aux[32];
+        sprintf(aux, "CI@%p", this); //llenamos a la variable aux
+        return aux;
+    }
+    bool equals(const Base &s) const override
+    {
+        const CI &aux = dynamic_cast<const CI &>(s);
+        return nit == aux.nit;
+    }
+    size_t getHashCode() const override
+    {
+        std::hash<int> aux;
+        return aux(nit);
+    }
 };
-//********************************END COMPARATOR**********************************************
+//********************************END CI**********************************************
 
 //********************************INI DEFAULTCOMPARATOR**********************************************
 class DefaultComparator : public virtual IComparator
 {
   public:
+    ~DefaultComparator() {}
     DefaultComparator() {}
     int compare(Object *i1, Object *i2) const override
     { //ESTE METODO TALVES DEVERIA PEDIR DOS INTEGERS PARA COMPARARLOS ENTRE ELLOS
         //Y NO PEDIR UN ICOMPARATOR
         Integer *int1 = dynamic_cast<Integer *>(i1);
         Integer *int2 = dynamic_cast<Integer *>(i2);
-        return int1->compareTo(*int2);
+        // return int1->compareTo(*int2);
+        return int1->i - int2->i;
     }
     //TUVE Q IMPLEMENTAR ESTOS METODOS PORQ COMO HEREDA DE BASE ESTA OBLIGADO A IMPLEMENTARLOS
     string toString() const override
@@ -178,11 +187,12 @@ class DefaultComparator : public virtual IComparator
 class CIComparator : public virtual IComparator
 {
   public:
+    ~CIComparator() {}
     int compare(Object *nit1, Object *nit2) const override
     {
         CI *ci1 = dynamic_cast<CI *>(nit1);
         CI *ci2 = dynamic_cast<CI *>(nit2);
-        return ci1 - ci2;
+        return ci1->nit - ci2->nit;
     }
     //TUVE Q IMPLEMENTAR ESTOS METODOS PORQ COMO HEREDA DE BASE ESTA OBLIGADO A IMPLEMENTARLOS
     string toString() const override
@@ -213,6 +223,7 @@ struct Pair
 //********************************INI NODE**********************************************
 class Node
 {
+  public:
     Pair *data;
     Node *izq;
     Node *der;
@@ -226,6 +237,7 @@ class Node
 class TreeMap : public virtual Object
 {
     Node *root;
+    Node *actual;
     IComparator *comparator;
 
   public:
@@ -240,52 +252,100 @@ class TreeMap : public virtual Object
     void add(Object *key, Object *value)
     {
         Node *nn;
+        Node *padre = nullptr;
+        actual = root;
         //PIENSO PRIMERO TENEMOS Q VER SI EL KEY ES UN INTEGER O UN CI PARA PODER
         //ANADIRLO AL ARBOL
         //Y COMPARLO SEGUN SU NIT O COMO INTEGER LO QUE SEA
-        if (CI *ci = dynamic_cast<CI *>(key))
-        { //SI ES UN CI CREAMOS
-            //si es un ci acemos algo . . .         EL NODO CON KEY CI
-            nn = new Node(new Pair{ci, value}); //
-            CIComparator *cc = dynamic_cast<CIComparator *>(comparator);
-
-            Node *padre = nullptr;
-            auto actual = root;
-            // Buscar el int en el �rbol, manteniendo un puntero al nodo padre
-            /* while (!vacio(actual) && cc->compare(actual->data->key , key) != 0)
-            {
-                padre = actual;
-                if (cc->compare(key, actual->data->key ) > 0)//si el key es mayor devolvera mayor a cero y nos vamos por la derecha
-                    actual = actual->der;
-                else if (cc->compare(key , actual->data->key ) < 0)
-                    actual = actual->iz;
-            }
-            // Si se ha encontrado el elemento, regresar sin insertar
-            if (!vacio(actual))
-                return;
-            // Si padre es NULL, entonces el �rbol estaba vac�o, el nuevo nodo ser�
-            // el nodo raiz
-            if (vacio(padre))
-                raiz = nn;
-            // Si el int es menor que el que contiene el nodo padre, lo insertamos
-            // en la rama izquierda
-            else if (cc->compare(key , actual->data->key ) < 0)
-                padre->izquierdo = nn;
-            // Si el int es mayor que el que contiene el nodo padre, lo insertamos
-            // en la rama derecha
-            else if (cc->compare(key , actual->data->key ) > 0)
-                padre->der = nn; */
-            //add(c);
-        }
-        else
+        //SI ES UN CI CREAMOS
+        //si es un ci acemos algo . . .         EL NODO CON KEY CI
+        nn = new Node(new Pair{key, value}); //
+        /* comparator = dynamic_cast<CIComparator *>(comparator);
+        if(!comparator){
+            comparator = dynamic_cast<DefaultComparator * >(comparator);
+        } */
+        // Buscar el int en el �rbol, manteniendo un puntero al nodo padre
+        while (!vacio(actual) && comparator->compare(actual->data->key, key) != 0)
         {
-            Integer *i = dynamic_cast<Integer *>(key); //SI NO ES CI CREAMOS EL NODO
-            nn = new Node(new Pair{i, value});         //CON KEY INTEGER
-            DefaultComparator *dc = dynamic_cast<DefaultComparator *>(comparator);
-            //add(i);
+            cout << "1" << endl;
+            padre = actual;
+            if (comparator->compare(key, actual->data->key) > 0)
+            { //si el key es mayor devolvera mayor a cero y nos vamos por la derecha
+                actual = actual->der;
+                cout << "2" << endl;
+            }
+            else if (comparator->compare(key, actual->data->key) < 0)
+            {
+                actual = actual->izq;
+                cout << "3" << endl;
+            }
+        }
+        // Si se ha encontrado el elemento, regresar sin insertar
+        if (!vacio(actual))
+        {
+            cout << "4" << endl;
+            return;
         }
 
+        // Si padre es NULL, entonces el �rbol estaba vac�o, el nuevo nodo ser�
+        // el nodo raiz
+        if (vacio(padre))
+        {
+            cout << "5" << endl;
+            root = nn;
+        }
+        // Si el int es menor que el que contiene el nodo padre, lo insertamos
+        // en la rama izquierda
+        else if (comparator->compare(key, actual->data->key) < 0)
+        {
+            cout << "6" << endl;
+            padre->izq = nn;
+        }
+        // Si el int es mayor que el que contiene el nodo padre, lo insertamos
+        // en la rama derecha
+        else if (comparator->compare(key, actual->data->key) > 0)
+        {
+            cout << "7" << endl;
+            padre->der = nn;
+        }
+        //add(c);
+        cout << "termine add" << endl;
     }
+
+    string toString()
+    {
+        cout << "termine toString" << endl;
+
+        return inOrden(root);
+    }
+    string inOrden(Node *root)
+    {
+        auto aux = root;
+        string r;
+        cout << "in 0" << endl;
+        /* si el árbol no está vacío, entonces recórrelo */
+        if (aux != nullptr)
+        {
+            cout << "in 1" << endl;
+            inOrden(aux->izq);
+            r += aux->data->value->toString() + " ";
+            inOrden(aux->der);
+            //r+=aux->data->value->toString()+" ";
+        } /* fin de if */
+
+        return r;
+    }
+
+   /*  void InOrden(void (*func)(int &), Nodo *nodo, bool r)
+    {
+        if (r)
+            nodo = raiz;
+        if (nodo->izquierdo)
+            InOrden(func, nodo->izquierdo, false);
+        func(nodo->dato);
+        if (nodo->derecho)
+            InOrden(func, nodo->derecho, false);
+    } */
 
     bool vacio(Node *root)
     {
@@ -309,6 +369,17 @@ int main()
                                    //la clase basic y tyambien esta implementado en tla otra rama y funciona por el virtual
                                    //todo en java es virtual
     cout << a->compareTo(*b) << endl;
+    std::cout << "*****************************************************"
+              << "\n";
+
+    TreeMap M;
+    M.add(new Integer(2), new String("dos"));
+    cout << M.toString() << endl;
+
+    M.add(new Integer(4), new String("cuatro"));
+    // M.add(new Integer(0), new String("cero"));
+    cout << M.toString() << endl;
+
     return 0;
 }
 
