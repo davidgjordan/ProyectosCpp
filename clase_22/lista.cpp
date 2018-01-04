@@ -4,7 +4,7 @@
 #include <ctime>
 #include <cstdio>
 #include <stdexcept>
-//listas genericas con macros
+//LISTAS GENERICAS CON MACROS
 using namespace std;
 # define  DEF_LL(T,LL)\
 struct LL##Node{\

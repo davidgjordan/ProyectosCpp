@@ -10,8 +10,7 @@ class Base{
     virtual ~Base(){}//es para q se llame al destuctor de sus hijos
     virtual string toString()const =0;
     virtual bool equals(const Base &)const =0;
-    virtual size_t getHashCode()const =0;
-        
+    virtual size_t getHashCode()const =0;      
 };
 
 
@@ -37,7 +36,7 @@ public:
     }
     size_t getHashCode()const override {
         
-        return  reinterpret_cast<size_t>(this);//caste  de numero a puntero
+        return  reinterpret_cast<size_t>(this);//castea  de numero a puntero
     }
 };
 
@@ -71,10 +70,6 @@ public:
     }
 
 };
-
-
-
-
 
 //*****************
 struct Pair{
@@ -233,15 +228,12 @@ private:
     void add(PairLL** d, Pair *p, size_t cap){
         auto hc= p->key->getHashCode();//saca hascode 
         auto pos = hc%cap;//obtengo la pocision
-
         auto & slot = d[pos]; //asi saco una refercnia de esa posicion el la tabla hasc
         if(slot == nullptr){
             slot = new PairLL();//si el slot es nulo creo otro
         }
-
         //si no anado directamente 
-        slot->add(p);
-        
+        slot->add(p);  
     }
 
 public:
