@@ -132,12 +132,7 @@ class CI : public Object
   public:
     ~CI() {}
     CI(const int &i, const string &s) : nit{i}, city{s} {}
-    string toString() const override
-    {
-        char aux[32];
-        sprintf(aux, "CI@%p", this); //llenamos a la variable aux
-        return aux;
-    }
+
     bool equals(const Base &s) const override
     {
         const CI &aux = dynamic_cast<const CI &>(s);
@@ -147,6 +142,10 @@ class CI : public Object
     {
         std::hash<int> aux;
         return aux(nit);
+    }
+    string toString() const override
+    {
+        return to_string(nit);
     }
 };
 //********************************END CI**********************************************
@@ -254,62 +253,44 @@ class TreeMap : public virtual Object
         Node *nn;
         Node *padre = nullptr;
         actual = root;
-        //PIENSO PRIMERO TENEMOS Q VER SI EL KEY ES UN INTEGER O UN CI PARA PODER
-        //ANADIRLO AL ARBOL
-        //Y COMPARLO SEGUN SU NIT O COMO INTEGER LO QUE SEA
-        //SI ES UN CI CREAMOS
-        //si es un ci acemos algo . . .         EL NODO CON KEY CI
+
         nn = new Node(new Pair{key, value}); //
-        /* comparator = dynamic_cast<CIComparator *>(comparator);
-        if(!comparator){
-            comparator = dynamic_cast<DefaultComparator * >(comparator);
-        } */
         // Buscar el int en el �rbol, manteniendo un puntero al nodo padre
         while (!vacio(actual) && comparator->compare(actual->data->key, key) != 0)
         {
-            cout << "1" << endl;
             padre = actual;
             if (comparator->compare(key, actual->data->key) > 0)
             { //si el key es mayor devolvera mayor a cero y nos vamos por la derecha
                 actual = actual->der;
-                cout << "2" << endl;
             }
             else if (comparator->compare(key, actual->data->key) < 0)
             {
                 actual = actual->izq;
-                cout << "3" << endl;
             }
         }
         // Si se ha encontrado el elemento, regresar sin insertar
         if (!vacio(actual))
         {
-            cout << "4" << endl;
             return;
         }
-
         // Si padre es NULL, entonces el �rbol estaba vac�o, el nuevo nodo ser�
         // el nodo raiz
         if (vacio(padre))
         {
-            cout << "5" << endl;
             root = nn;
         }
         // Si el int es menor que el que contiene el nodo padre, lo insertamos
         // en la rama izquierda
-        else if (comparator->compare(key, actual->data->key) < 0)
+        else if (comparator->compare(key, padre->data->key) < 0)
         {
-            cout << "6" << endl;
             padre->izq = nn;
         }
         // Si el int es mayor que el que contiene el nodo padre, lo insertamos
         // en la rama derecha
-        else if (comparator->compare(key, actual->data->key) > 0)
+        else if (comparator->compare(key, padre->data->key) > 0)
         {
-            cout << "7" << endl;
             padre->der = nn;
         }
-        //add(c);
-        cout << "termine add" << endl;
     }
 
     string toString()
@@ -321,36 +302,108 @@ class TreeMap : public virtual Object
     string inOrden(Node *root)
     {
         auto aux = root;
-        string r;
-        cout << "in 0" << endl;
+        string v = "";
+        string k = "";
         /* si el árbol no está vacío, entonces recórrelo */
         if (aux != nullptr)
         {
-            cout << "in 1" << endl;
             inOrden(aux->izq);
-            r += aux->data->value->toString() + " ";
+            v += aux->data->value->toString() + " ";
+            k = aux->data->key->toString();
+
+            cout << "key: " << k << " data: " << v << endl;
+
             inOrden(aux->der);
-            //r+=aux->data->value->toString()+" ";
         } /* fin de if */
 
-        return r;
+        return v;
     }
 
-   /*  void InOrden(void (*func)(int &), Nodo *nodo, bool r)
+    void remove(Object obj)
     {
-        if (r)
-            nodo = raiz;
-        if (nodo->izquierdo)
-            InOrden(func, nodo->izquierdo, false);
-        func(nodo->dato);
-        if (nodo->derecho)
-            InOrden(func, nodo->derecho, false);
-    } */
+
+        Node *padre = nullptr;
+        Node *nodo;
+        int aux;
+
+        Object * auxk;
+
+
+        actual = root;
+
+        Object * obj1 = dynamic_cast<Object *>(&obj);
+        // Mientras sea posible que el valor est� en el �rbol
+        while (!vacio(actual))
+        {
+            if ( comparator->compare(obj1 , actual->data->key ) == 0) 
+            { // Si el valor est� en el nodo actual
+                if (esHoja(actual))
+                {              // Y si adem�s es un nodo hoja: lo borramos
+                    if (padre) // Si tiene padre (no es el nodo raiz)
+                        // Anulamos el puntero que le hace referencia
+                        if (padre->der == actual)
+                            padre->der = nullptr;
+                        else if (padre->izq == actual)
+                            padre->izq = nullptr;
+                    delete actual; // Borrar el nodo
+                    actual = nullptr;
+                    return;
+                }
+                else
+                { // Si el valor est� en el nodo actual, pero no es hoja
+                    // Buscar nodo
+                    padre = actual;
+                    // Buscar nodo m�s izquierdo de rama derecha
+                    if (actual->der)
+                    {
+                        nodo = actual->der;
+                        while (nodo->izq)
+                        {
+                            padre = nodo;
+                            nodo = nodo->izq;
+                        }
+                    }
+                    // O buscar nodo m�s derecho de rama izquierda
+                    else
+                    {
+                        nodo = actual->izq;
+                        while (nodo->der)
+                        {
+                            padre = nodo;
+                            nodo = nodo->der;
+                        }
+                    }
+                    // Intercambiar valores de no a borrar u nodo encontrado
+                    // y continuar, cerrando el bucle. El nodo encontrado no tiene
+                    // por qu� ser un nodo hoja, cerrando el bucle nos aseguramos
+                    // de que s�lo se eliminan nodos hoja.
+                    /* aux = actual->data;
+                    actual->dato = nodo->dato;
+                    nodo->dato = aux;
+                    actual = nodo;
+ */
+                    auxk = actual->data->key;
+                    actual->data->key = nodo->data->key;
+                    nodo->data->key = auxk;
+                    actual = nodo;
+                }
+            }
+            else
+            { // Todav�a no hemos encontrado el valor, seguir busc�ndolo
+                padre = actual;
+                if (comparator->compare(obj1, actual->data->key) > 0)
+                    actual = actual->der;
+                else if (comparator->compare(obj1, actual->data->key) < 0)
+                    actual = actual->izq;
+            }
+        } 
+    }
 
     bool vacio(Node *root)
     {
         return root == nullptr;
     }
+    bool esHoja(Node *r) { return !r->der && !r->izq; }
 };
 //********************************END TREEMAP**********************************************
 
@@ -372,13 +425,26 @@ int main()
     std::cout << "*****************************************************"
               << "\n";
 
-    TreeMap M;
-    M.add(new Integer(2), new String("dos"));
-    cout << M.toString() << endl;
+    TreeMap M1;
+    M1.add(new Integer(2), new String("dos"));
+    M1.add(new Integer(4), new String("cuatro"));
+    M1.add(new Integer(0), new String("cero"));
+    cout << M1.toString() << endl;
+    //M1.remove(Integer{0}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
+    std::cout << "*****************************************************"
+              << "\n";
 
-    M.add(new Integer(4), new String("cuatro"));
-    // M.add(new Integer(0), new String("cero"));
-    cout << M.toString() << endl;
+    //*********************************************
+   /*  Integer obj{7};
+    if(Object * data = dynamic_cast<Object * >(&obj)){
+            cout<<"se puede"<<endl;
+     } */
+   CIComparator *n = new CIComparator();
+    TreeMap *M = new TreeMap(*n);
+    M->add(new CI(2, "cbba1"), new String("topo1"));
+    M->add(new CI(4, "cbba2"), new String("topo2"));
+    M->add(new CI(0, "cbba3"), new String("topo3"));
+    cout << M->toString() << endl; 
 
     return 0;
 }
