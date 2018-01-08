@@ -132,9 +132,9 @@ public:
     //     return data[x];
     // }
 
-    mah operator[](size_t x){
+     mah operator[](size_t x){
         return mah{data[x]};
-    }
+    } 
 
     iterator /* object ** */ begin(){ //es el i = 0 masd o menos
         return & (data[0]);

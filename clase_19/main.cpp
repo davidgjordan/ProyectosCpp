@@ -103,11 +103,9 @@ struct HashMapIterator{
     bool operator!=(const HashMapIterator & src){
         return p != src.p;
     }
-
     const Pair & operator*()const{
         return *p;
     }
-
     HashMapIterator &  operator++(){ //es el prefijo ++i no el postfijo
         if(p->next != nullptr){
             p = p->next;
@@ -118,16 +116,13 @@ struct HashMapIterator{
 
         return *this;
     }
-
     static Pair * findNext(PairLL** data ,size_t  cap , size_t & pos){
             if(pos>=cap){
                 return nullptr;
             }
-
             while(pos<cap){
                 if(data[pos]!= nullptr){
                     return data[pos]->first;
-
                 }
                 pos++;
             }   

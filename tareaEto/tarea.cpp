@@ -232,30 +232,138 @@ class Node
 };
 //********************************END NODE**********************************************
 
+/* //********************************INI NODEPILA**********************************************
+class NodePila
+{
+  public:
+    Pair *data;
+    NodePila *siguiente;
+    NodePila(Pair *sdata, NodePila *snode = nullptr) : data{sdata}, siguiente{snode}
+    {
+    }
+
+  public:
+    ~NodePila()
+    {
+    }
+    friend class Pila;
+};
+//********************************END nodePILA**********************************************
+
+//********************************Ini PILA**********************************************
+class Pila
+{
+  public:
+    NodePila *ultimo = nullptr;
+    NodePila *primero = nullptr;
+
+  public:
+    void push(Pair *str)
+    {
+        auto n = new NodePila(str, ultimo);
+        ultimo = n;
+        if (!primero)
+            primero = n;
+    }
+
+    Pair *pop()
+    {
+        if (!ultimo)
+            return nullptr;
+        auto aux = ultimo;
+        Pair *data = aux->data;
+        ultimo = ultimo->siguiente;
+        delete aux;
+        return data;
+    }
+    void print()
+    {
+        auto aux = ultimo;
+        while (aux)
+        {
+            cout << aux->data->key->toString() << endl;
+            aux = aux->siguiente;
+        }
+    }
+};
+//********************************END PILA**********************************************
+ */
+
 //********************************INI TREEMAP**********************************************
 class TreeMap : public virtual Object
 {
     Node *root;
     Node *actual;
     IComparator *comparator;
-
+    //Pila pila;
+    Pair pair[50];
+    int cantidad = 0;
+    using iterator = Pair *; //alias cada ves q diga iterator remplazon por Pair *
   public:
+    ~TreeMap()
+    {   
+        podar(root);
+        delete comparator;
+    }
+
     TreeMap() : root{nullptr}
     {                                         //no se puede instanciar un objeto con new de la anterior forma
         comparator = new DefaultComparator(); //tuve q acer asi
     }
     TreeMap(const IComparator &c) : root{nullptr}
     {                                    //no se puede instanciar un objeto con new de la anterior forma
-        comparator = new CIComparator(); //tuve q acer
+        comparator = (IComparator*)&c; //COMO EL C ES = CONST ICOMPARATOR & LO TENGO Q CASTEAR A SOLO ICOMPARATOR *  
     }
+
+    // Poda: borrar todos los nodos a partir de uno, incluido
+    private:
+    void podar(Node *&nodo)
+    {
+        // Algoritmo recursivo, recorrido en postorden
+        if (nodo)
+        {
+            podar(nodo->izq); // Podar izquierdo
+            podar(nodo->der);   // Podar derecho
+            delete nodo;            // Eliminar nodo
+            nodo = nullptr;
+        }
+    }
+    public:
+    iterator /* Pair ** */ begin()
+    { //es el i = 0 masd o menos
+        cout << "begin" << endl;
+        llenarVectorInOrden(root);
+
+        return &(pair[0]);
+    }
+    void llenarVectorInOrden(Node *root)
+    {
+        auto aux = root;
+        if (aux != nullptr)
+        {
+            llenarVectorInOrden(aux->izq);
+            Pair p{aux->data->key, aux->data->value};
+            pair[cantidad] = p;
+            cantidad++;
+            llenarVectorInOrden(aux->der);
+        }
+    }
+
+    iterator /* Pair ** */ end()
+    {
+        cout << "end" << endl;
+        return &(pair[cantidad]); //
+    }
+
+    
     void add(Object *key, Object *value)
     {
         Node *nn;
         Node *padre = nullptr;
         actual = root;
 
-        nn = new Node(new Pair{key, value}); //
-        // Buscar el int en el �rbol, manteniendo un puntero al nodo padre
+        nn = new Node(new Pair{key, value}); //ARREGLAR ESTO Q SOLO SE NEW CUANDO ESTEMOS SEGUROS DE ANADIR OSEA ABAJO
+        // Buscar el int en el arbol, manteniendo un puntero al nodo padre
         while (!vacio(actual) && comparator->compare(actual->data->key, key) != 0)
         {
             padre = actual;
@@ -273,7 +381,7 @@ class TreeMap : public virtual Object
         {
             return;
         }
-        // Si padre es NULL, entonces el �rbol estaba vac�o, el nuevo nodo ser�
+        // Si padre es NULL, entonces el arbol estaba vacio, el nuevo nodo sera
         // el nodo raiz
         if (vacio(padre))
         {
@@ -319,84 +427,130 @@ class TreeMap : public virtual Object
         return v;
     }
 
-    void remove(Object obj)
+    void remove(Integer iobj)
     {
-
         Node *padre = nullptr;
-        Node *nodo;
-        int aux;
-
-        Object * auxk;
-
-
         actual = root;
+        Node *nodo;
+        auto aux = new Pair();
 
-        Object * obj1 = dynamic_cast<Object *>(&obj);
+        CIComparator *cicomp = dynamic_cast<CIComparator *>(comparator);
+        Object *obj = &iobj;
+        int num = iobj.i;
+        //std::cout << "unoo " <<num<<"  333"<< '\n';
+        if (cicomp)
+        {
+            //std::cout << "entre cicom1" << '\n';
+            obj = new CI((const)num, "prueba");
+            //std::cout << "entre cicom3" <<obj->toString()<<"  333"<< '\n';
+        }
         // Mientras sea posible que el valor est� en el �rbol
         while (!vacio(actual))
         {
-            if ( comparator->compare(obj1 , actual->data->key ) == 0) 
-            { // Si el valor est� en el nodo actual
+            if (comparator->compare(root->data->key, obj) == 0 && esHoja(root))
+            {
+                //delete root;
+                root = nullptr;
+                delete aux;
+                return;
+            }
+            //cout <<" wh"<< '\n';
+            if (comparator->compare(actual->data->key, obj) == 0) //// o tendria q hacer con el compare
+            {                                                     // Si el valor est� en el nodo actual
+                                                                  //   cout <<" 1.0"<< '\n';
                 if (esHoja(actual))
-                {              // Y si adem�s es un nodo hoja: lo borramos
-                    if (padre) // Si tiene padre (no es el nodo raiz)
+                {
+                    //    cout <<" 1.1"<< '\n';
+                    // Y si adem�s es un nodo hoja: lo borramos
+                    if (padre)
+                    { // Si tiene padre (no es el nodo raiz)
                         // Anulamos el puntero que le hace referencia
+                        //      cout <<" 1.2"<< '\n';
+
                         if (padre->der == actual)
+                        {
                             padre->der = nullptr;
+                            //         cout <<" 1.3"<< '\n';
+                        }
                         else if (padre->izq == actual)
+                        {
+                            //         cout <<" 1.4"<< '\n';
                             padre->izq = nullptr;
-                    delete actual; // Borrar el nodo
+                        }
+                    }
+                    // cout <<" 1.5"<< '\n';
+
+                    delete[] actual; // Borrar el nodo //////////////////////////////////
                     actual = nullptr;
+                    delete aux;
+                    std::cout << "termine remove 1" << '\n';
                     return;
                 }
                 else
                 { // Si el valor est� en el nodo actual, pero no es hoja
                     // Buscar nodo
+                    //cout <<" 2.0"<< '\n';
+
                     padre = actual;
-                    // Buscar nodo m�s izquierdo de rama derecha
+                    // Buscar nodo mas izquierdo de rama derecha
                     if (actual->der)
                     {
+                        //cout <<" 2.1"<< '\n';
                         nodo = actual->der;
                         while (nodo->izq)
                         {
+                            //cout <<" wh 2.2"<< '\n';
+
                             padre = nodo;
                             nodo = nodo->izq;
                         }
                     }
-                    // O buscar nodo m�s derecho de rama izquierda
+                    // O buscar nodo mas derecho de rama izquierda
                     else
                     {
+                        //cout <<" 2.3"<< '\n';
                         nodo = actual->izq;
                         while (nodo->der)
                         {
+                            //cout <<"wh 2.4"<< '\n';
                             padre = nodo;
                             nodo = nodo->der;
                         }
                     }
                     // Intercambiar valores de no a borrar u nodo encontrado
                     // y continuar, cerrando el bucle. El nodo encontrado no tiene
-                    // por qu� ser un nodo hoja, cerrando el bucle nos aseguramos
-                    // de que s�lo se eliminan nodos hoja.
-                    /* aux = actual->data;
-                    actual->dato = nodo->dato;
-                    nodo->dato = aux;
-                    actual = nodo;
- */
-                    auxk = actual->data->key;
-                    actual->data->key = nodo->data->key;
-                    nodo->data->key = auxk;
+                    // por que ser un nodo hoja, cerrando el bucle nos aseguramos
+                    // de que selo se eliminan nodos hoja.
+                    aux->key = actual->data->key;
+                    aux->value = actual->data->value;
+
+                    actual->data->key = nodo->data->key;     //cambiamos el valor actual ahora vale lo de nodo
+                    actual->data->value = nodo->data->value; //cambiamos el valor actual ahora vale lo de nodo
+
+                    nodo->data->key = aux->key;
+                    nodo->data->value = aux->value;
+
                     actual = nodo;
                 }
             }
             else
-            { // Todav�a no hemos encontrado el valor, seguir busc�ndolo
+            { // Todavia no hemos encontrado el valor, seguir buscandolo
+                //cout <<" 3.0"<< '\n';
+
                 padre = actual;
-                if (comparator->compare(obj1, actual->data->key) > 0)
+                if (comparator->compare(obj, actual->data->key) > 0)
+                {
+                    //cout <<" 3.1"<< '\n';
                     actual = actual->der;
-                else if (comparator->compare(obj1, actual->data->key) < 0)
+                }
+                else if (comparator->compare(obj, actual->data->key) < 0)
+                {
+                    //cout <<" 3.2"<< '\n';
                     actual = actual->izq;
+                }
             }
-        } 
+        }
+        std::cout << "termine remove" << '\n';
     }
 
     bool vacio(Node *root)
@@ -404,24 +558,42 @@ class TreeMap : public virtual Object
         return root == nullptr;
     }
     bool esHoja(Node *r) { return !r->der && !r->izq; }
+
+    Object *operator[](const Object &src)
+    { //el q use la funcion elije q acer con el objeto
+        actual = root;
+        Object *copia = (Object *)&src;
+        // Todavia puede aparecer, ya que quedan nodos por mirar
+        Integer *in = dynamic_cast<Integer *>(copia);
+        CIComparator *cicomp = dynamic_cast<CIComparator *>(comparator);
+        Object *obj = copia;
+        int num = in->i;
+        //std::cout << "unoo " <<num<<"  333"<< '\n';
+        if (cicomp)
+        {
+            //std::cout << "entre cicom1" << '\n';
+            obj = new CI((const)num, "prueba");
+            //std::cout << "entre cicom3" <<obj->toString()<<"  333"<< '\n';
+        }
+        while (!vacio(actual))
+        {
+            if (actual->data->key->equals(*obj))
+                return actual->data->value; // int encontrado
+            else if (comparator->compare(obj, actual->data->key) > 0)
+                actual = actual->der; // Seguir
+            else if (comparator->compare(obj, actual->data->key) < 0)
+                actual = actual->izq;
+        }
+        return new String("no hay"); // No est� en �rbol
+    }
+
+    /*  public:
+    using iterator = TreeMapIterator; */
 };
 //********************************END TREEMAP**********************************************
 
 int main()
 {
-    std::hash<string> aux;
-    string j = "jhose";
-    size_t t = aux(j);
-    std::cout << "hash(s1) = " << t << "\n";
-    std::cout << "hash(s1) = " << aux(j) << "\n";
-
-    IComparable *a = new Integer(8);
-    IComparable *b = new Integer(10);
-
-    cout << a->toString() << endl; //es uin metodo eeredado en
-                                   //la clase basic y tyambien esta implementado en tla otra rama y funciona por el virtual
-                                   //todo en java es virtual
-    cout << a->compareTo(*b) << endl;
     std::cout << "*****************************************************"
               << "\n";
 
@@ -429,22 +601,49 @@ int main()
     M1.add(new Integer(2), new String("dos"));
     M1.add(new Integer(4), new String("cuatro"));
     M1.add(new Integer(0), new String("cero"));
+    std::cout << "ini rostring" << '\n';
     cout << M1.toString() << endl;
+    std::cout << "ini remove" << '\n';
     //M1.remove(Integer{0}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
+    std::cout << "ini remove" << '\n';
+    //M1.remove(Integer{4}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
+    std::cout << "ini tostring" << '\n';
+    cout << M1.toString() << endl;
+    std::cout << "ini remove" << '\n';
+    //M1.remove(Integer{2}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
+    std::cout << "ini tostring" << '\n';
+    cout << M1.toString() << endl;
+    cout << M1[Integer{4}]->toString() << endl; //implementar operatror []  //accedo a la valor con la llave 4
+
     std::cout << "*****************************************************"
               << "\n";
 
-    //*********************************************
-   /*  Integer obj{7};
-    if(Object * data = dynamic_cast<Object * >(&obj)){
-            cout<<"se puede"<<endl;
-     } */
-   CIComparator *n = new CIComparator();
-    TreeMap *M = new TreeMap(*n);
-    M->add(new CI(2, "cbba1"), new String("topo1"));
-    M->add(new CI(4, "cbba2"), new String("topo2"));
-    M->add(new CI(0, "cbba3"), new String("topo3"));
-    cout << M->toString() << endl; 
+    CIComparator *n = new CIComparator();
+    TreeMap M(*n);
+    M.add(new CI(15, "cbba1"), new String("topo15"));
+    M.add(new CI(10, "cbba2"), new String("topo10"));
+    M.add(new CI(9, "cbba2"), new String("topo9"));
+    M.add(new CI(6, "cbba2"), new String("topo6"));
+    M.add(new CI(5, "cbba3"), new String("topo5"));
+    M.add(new CI(4, "cbba3"), new String("topo4"));
+    M.add(new CI(3, "cbba3"), new String("topo3"));
+
+    cout << M[Integer{4}]->toString() << endl; //implementar operatror []  //accedo a la valor con la llave 4
+    std::cout << "***********ITERATOR CI******************************************"
+              << "\n";
+    for (auto &p : M) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
+    {                 //TENEMOS Q ACER ITERADOR EN EL TreeMap  //llamar al destructor borrar nodos los objetos de ;los nodeos y el comparador
+        cout << p.key->toString() << " - ";
+        cout << p.value->toString() << endl;
+    }
+
+    std::cout << "***********ITERATOR integer******************************************"
+              << "\n";
+    for (auto & p : M1) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
+    {                 //TENEMOS Q ACER ITERADOR EN EL TreeMap  //llamar al destructor borrar nodos los objetos de ;los nodeos y el comparador
+        cout << p.key->toString() << " - ";
+        cout << p.value->toString() << endl;
+    }
 
     return 0;
 }
