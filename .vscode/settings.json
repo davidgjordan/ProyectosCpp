@@ -5,6 +5,10 @@
         "system_error": "cpp",
         "type_traits": "cpp",
         "new": "cpp",
-        "ctime": "cpp"
+        "ctime": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "*.tcc": "cpp",
+        "initializer_list": "cpp"
     }
 }

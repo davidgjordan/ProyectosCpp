@@ -162,7 +162,8 @@ class DefaultComparator : public virtual IComparator
         Integer *int1 = dynamic_cast<Integer *>(i1);
         Integer *int2 = dynamic_cast<Integer *>(i2);
         // return int1->compareTo(*int2);
-        return int1->i - int2->i;
+        //return int1->i - int2->i;
+        return int1->compareTo(*int2);
     }
     //TUVE Q IMPLEMENTAR ESTOS METODOS PORQ COMO HEREDA DE BASE ESTA OBLIGADO A IMPLEMENTARLOS
     string toString() const override
@@ -232,7 +233,7 @@ class Node
 };
 //********************************END NODE**********************************************
 
-/* //********************************INI NODEPILA**********************************************
+ //********************************INI NODEPILA**********************************************
 class NodePila
 {
   public:
@@ -287,7 +288,7 @@ class Pila
     }
 };
 //********************************END PILA**********************************************
- */
+ 
 
 //********************************INI TREEMAP**********************************************
 class TreeMap : public virtual Object
@@ -295,10 +296,12 @@ class TreeMap : public virtual Object
     Node *root;
     Node *actual;
     IComparator *comparator;
+    Pila *pila;
     //Pila pila;
     Pair pair[50];
     int cantidad = 0;
     using iterator = Pair *; //alias cada ves q diga iterator remplazon por Pair *
+    using iterator2 = Pair *; //alias cada ves q diga iterator remplazon por Pair *
   public:
     ~TreeMap()
     {   
@@ -329,12 +332,19 @@ class TreeMap : public virtual Object
         }
     }
     public:
-    iterator /* Pair ** */ begin()
+    // iterator /* Pair ** */ begin()
+    // { //es el i = 0 masd o menos
+    //     cout << "begin" << endl;
+    //     llenarVectorInOrden(root);
+
+    //     return &(pair[0]);
+    // }
+    iterator2 /* Pair * */ begin()
     { //es el i = 0 masd o menos
         cout << "begin" << endl;
         llenarVectorInOrden(root);
 
-        return &(pair[0]);
+        return (pila->pop());
     }
     void llenarVectorInOrden(Node *root)
     {
@@ -345,15 +355,23 @@ class TreeMap : public virtual Object
             Pair p{aux->data->key, aux->data->value};
             pair[cantidad] = p;
             cantidad++;
+
+            pila->push(&p);
             llenarVectorInOrden(aux->der);
         }
     }
 
-    iterator /* Pair ** */ end()
+    // iterator /* Pair ** */ end()
+    // {
+    //     cout << "end" << endl;
+    //     return &(pair[cantidad]); //
+    // }
+    iterator2 /* Pair ** */ end()
     {
         cout << "end" << endl;
-        return &(pair[cantidad]); //
+        return nullptr; //
     }
+
 
     
     void add(Object *key, Object *value)
@@ -436,12 +454,12 @@ class TreeMap : public virtual Object
 
         CIComparator *cicomp = dynamic_cast<CIComparator *>(comparator);
         Object *obj = &iobj;
-        int num = iobj.i;
+        const int num = iobj.i;
         //std::cout << "unoo " <<num<<"  333"<< '\n';
         if (cicomp)
         {
             //std::cout << "entre cicom1" << '\n';
-            obj = new CI((const)num, "prueba");
+            obj = new CI(num, "prueba");
             //std::cout << "entre cicom3" <<obj->toString()<<"  333"<< '\n';
         }
         // Mientras sea posible que el valor est� en el �rbol
@@ -567,12 +585,12 @@ class TreeMap : public virtual Object
         Integer *in = dynamic_cast<Integer *>(copia);
         CIComparator *cicomp = dynamic_cast<CIComparator *>(comparator);
         Object *obj = copia;
-        int num = in->i;
+        const int num = in->i;
         //std::cout << "unoo " <<num<<"  333"<< '\n';
         if (cicomp)
         {
             //std::cout << "entre cicom1" << '\n';
-            obj = new CI((const)num, "prueba");
+            obj = new CI(num, "prueba");
             //std::cout << "entre cicom3" <<obj->toString()<<"  333"<< '\n';
         }
         while (!vacio(actual))
