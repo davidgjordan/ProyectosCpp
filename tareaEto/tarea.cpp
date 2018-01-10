@@ -359,6 +359,9 @@ class Pila2
         }
         data[n++] = o; //la siguiente ves anado en la pocision n+1
     }
+    Pair * pop(){
+        return data[0];
+    }
 
     void grow()
     {
@@ -382,13 +385,15 @@ class TreeMap : public virtual Object
     Node *actual;
     IComparator *comparator;
     Pila *pila;
-    Pila2 *pila2;
+
+    Pila2 pila2;
+    
     Pair pair[50];
     Pair **pairP;
 
     int cantidad = 0;
     using iterator = Pair *;  //alias cada ves q diga iterator remplazon por Pair *
-    using iterator2 = Pila2 *; //alias cada ves q diga iterator remplazon por Pair *
+    using iterator2 = Pair *; //alias cada ves q diga iterator remplazon por Pair *
   public:
     ~TreeMap()
     {
@@ -430,9 +435,18 @@ class TreeMap : public virtual Object
     iterator2 /* Pair * */ begin()
     { //es el i = 0 masd o menos
         llenarVectorInOrden(root);
-        //pila->pop();
-        cout << "begin" << endl;
-        return &(pila2[0]);
+        cout << "begin Arbol " << endl;
+        for (auto p : pila2) 
+        {         
+        cout << "1" << endl;
+        
+            cout <<"key P: "<< p->key->toString() << " - ";
+            cout <<"value P: " <<p->value->toString() << endl;
+        }
+        cout << "2 " << endl;
+        
+        //return &(*pila2[0]);
+        return (pila2.pop());
     }
     void llenarVectorInOrden(Node *root)
     {
@@ -440,12 +454,10 @@ class TreeMap : public virtual Object
         if (aux != nullptr)
         {
             llenarVectorInOrden(aux->izq);
-            Pair p{aux->data->key, aux->data->value};
-            pair[cantidad] = p;
-            cantidad++;
-
-            pila->push(&p);
-            pila2->push(&p);
+            Pair *p = new Pair{aux->data->key, aux->data->value};
+            // pair[cantidad] = p;
+            // cantidad++;
+            pila2.push(p);
             llenarVectorInOrden(aux->der);
         }
 
@@ -738,7 +750,7 @@ int main()
     cout << M[Integer{4}]->toString() << endl; //implementar operatror []  //accedo a la valor con la llave 4
     std::cout << "***********ITERATOR CI******************************************"
               << "\n";
-    /* for (auto &p : M) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
+    for (auto &p : M) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
     {                 //TENEMOS Q ACER ITERADOR EN EL TreeMap  //llamar al destructor borrar nodos los objetos de ;los nodeos y el comparador
         cout << p.key->toString() << " - ";
         cout << p.value->toString() << endl;
@@ -751,7 +763,7 @@ int main()
         cout << p.key->toString() << " - ";
         cout << p.value->toString() << endl;
     }
- */
+ 
 
     Pila2 pila;
     Integer i{5};
@@ -779,11 +791,11 @@ int main()
     pila.pop();
     pila.pop(); */
 
-    for (auto p : pila) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
+    /* for (auto p : pila) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
     {                   //TENEMOS Q ACER ITERADOR EN EL TreeMap  //llamar al destructor borrar nodos los objetos de ;los nodeos y el comparador
         cout << p->key->toString() << " - ";
         cout << p->value->toString() << endl;
-    }
+    } */
 
     return 0;
 }
