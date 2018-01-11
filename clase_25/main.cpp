@@ -3,11 +3,43 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <cstdlib>
+
 
 using namespace std;
 
+template<class T>
+    struct DefaultDeleter{
+    void release(T & x){
+        //llama a los destructorees de string o del o inde o del objeto creado
+    cout<<"defultDeleter"<<endl;
+    
+    }
+};
+
+
+template<class T>
+struct DefaultDeleter<T*>{
+void release(T * x){
+    //llama a los destructorees de string o del o inde o del objeto creado
+    delete x;
+cout<<"defultDeleter T * "<<endl;
+
+}
+};
+
+struct FreeDeleter{
+    void release(void * p){
+        //llama a los destructorees de string o del o inde o del objeto creado
+        free(p);//delete pero del malloc
+    cout<<"FreeDeleter int * "<<endl;
+    
+    }
+    };
+
+//LA CLASE DELETER ELIMINARA TODOS LOS PUNTEROS SI ESQ SE REQUIERE ACER ESO
 //la siguiente apartir de template sera una funcion solo una funcion
-template <typename T>//se puede poner clase igual en ves de typename  ESTE TEMPLATE TODO EN UNA SOLA CLASE TIENE Q ESTAR
+template <typename T, class Deleter= DefaultDeleter<T>>//se puede poner clase igual en ves de typename  ESTE TEMPLATE TODO EN UNA SOLA CLASE TIENE Q ESTAR
 class ArrayList{
 
     T * data;
@@ -21,6 +53,11 @@ public:
     }
 
     ~ArrayList(){
+        Deleter d;
+        for (size_t i = 0U; i < n; i++)
+        {
+            d.release(data[i]);
+        }
         delete []data;
     }
 
@@ -95,9 +132,18 @@ public:
     }
 };
 
+
+int * get_int(int p){
+    //malloc es como el sucesor de new  //casteamos a int * por el void * de 
+    int * n = (int *) malloc(sizeof (int));//le tenemos q dar el nmero de bits
+
+    *n= p;
+    return n;
+}
+
 int main(){
-    ArrayList <int> x;//en este punto se crea esta clase y todos los metodos q se estan utilizando
-    x.add(5).add(10).add(11).add(12).add(13).add(15).add(16);
+    // ArrayList <int> x;//en este punto se crea esta clase y todos los metodos q se estan utilizando
+    // x.add(5).add(10).add(11).add(12).add(13).add(15).add(16);
 /* 
     for (size_t i = 0; i < x.size(); i++)
     {
@@ -107,14 +153,14 @@ int main(){
  */
 
 
-    ArrayList <string> y;//en este punto se crea esta clase y todos los metodos q se estan utilizando
-    y.add("dsfsad5").add("10dsfsad").add("11dsfsad").add("12dsfsad").add("13dsfsad").add("15dsfsad").add("16dsfsad");
+    // ArrayList <string> y;//en este punto se crea esta clase y todos los metodos q se estan utilizando
+    // y.add("dsfsad5").add("10dsfsad").add("11dsfsad").add("12dsfsad").add("13dsfsad").add("15dsfsad").add("16dsfsad");
 
     /* for (size_t i = 0; i < y.size(); i++)
     {
         cout<<y[i]<<endl;
     } */
-
+/* 
     cout<<"*********************************************"<<endl;
     ArrayList<P> ps;
     P p1{10};
@@ -122,8 +168,23 @@ int main(){
     P p3{13};
     P p4{14};
     P p5{15};
-    ps.add(p1).add(p2).add(p3).add(40).add(50).add(P{50});
+    ps.add(p1).add(p2).add(p3).add(40).add(50).add(P{50}); */
 
+
+
+    ArrayList <string> y;//en este punto se crea esta clase y todos los metodos q se estan utilizando
+    y.add("dsfsad5").add("10dsfsad").add("11dsfsad");
+
+    cout<<"*********************************************"<<endl;
+
+
+
+    ArrayList<string *> ss;
+    ss.add(new string("uno")).add(new string("dos")).add(new string("tres"));
+
+
+    ArrayList<int *, FreeDeleter> pp;
+    pp.add(get_int(10)).add(get_int(20));
 
     return 0;
 
