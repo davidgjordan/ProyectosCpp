@@ -1,3 +1,0 @@
-/home/ubuntu/Desktop/ProyectosCpp/thinker3/bin/CMakeFiles/edit_cache.dir
-/home/ubuntu/Desktop/ProyectosCpp/thinker3/bin/CMakeFiles/rebuild_cache.dir
-/home/ubuntu/Desktop/ProyectosCpp/thinker3/bin/CMakeFiles/prueba.dir
