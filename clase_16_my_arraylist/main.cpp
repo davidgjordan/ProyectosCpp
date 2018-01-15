@@ -250,7 +250,11 @@ int main(){
         cout<<i->to_string()<<endl;
     }
 
-
+    cout<<"*********dasdsad***************"<<endl;
     
+    for(auto i=0;i<y.size(); i++){
+        cout<<y[i]->to_string()<<endl;
+    }
+
     return 0; 
 }

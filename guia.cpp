@@ -134,7 +134,7 @@ int main(){
 	return 0;
 }
 
-//*****REVERSE CADENA PRINT*****************
+//*****REVERSE CADENA PRINT*****************  iterar con un for normal
 char* strrev( char* s ){
   char  c;
   char* s0 = s - 1;
@@ -169,14 +169,14 @@ int main(){
             return p;
         }
     }
-    INT MIAN{\
+    INT MAIN{\
         aqui ace semantica de movida
         la cadena sss vive solo entre las llaves   y name tine una copia de ssss 
         P x {"ASDAS"s}; //el puntero sasas le asignamos a x
         ********************
         aqui no porq s no esta dentro de un ambito de {} destruccio al menos q agamos
-        //P y {move(s)}; 
         string s = "hola"
+        //P y {move(s)}; 
         P y {s};
         cout<<s<<endl;
         **********************

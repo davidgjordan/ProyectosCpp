@@ -258,9 +258,9 @@ class TreeMap : public virtual Object
     {                                         //no se puede instanciar un objeto con new de la anterior forma
         comparator = new DefaultComparator(); //tuve q acer asi
     }
-    TreeMap(const IComparator &c) : root{nullptr}
+    TreeMap(const IComparator * c) : root{nullptr}
     {                                   //no se puede instanciar un objeto con new de la anterior forma
-        comparator = (IComparator *)&c; //COMO EL C ES = CONST ICOMPARATOR & LO TENGO Q CASTEAR A SOLO ICOMPARATOR *
+        comparator = (IComparator *)c; //COMO EL C ES = CONST ICOMPARATOR & LO TENGO Q CASTEAR A SOLO ICOMPARATOR *
     }
 
     // Poda: borrar todos los nodos a partir de uno, incluido
@@ -278,6 +278,14 @@ class TreeMap : public virtual Object
     }
 
   public:
+
+    int size(){
+        return cantidad;
+    }
+    Pair * operator[](int x){
+        return &pair[x];
+    }
+
     iterator /* Pair ** */ begin()
     { //es el i = 0 masd o menos
         cout << "begin" << endl;
@@ -569,14 +577,14 @@ int main()
               << "\n";
 
     CIComparator *n = new CIComparator();
-    TreeMap M(*n);
+    TreeMap M(new CIComparator());
     M.add(new CI(15, "cbba1"), new String("topo15"));
     M.add(new CI(10, "cbba2"), new String("topo10"));
     M.add(new CI(9, "cbba2"), new String("topo9"));
     M.add(new CI(6, "cbba2"), new String("topo6"));
     M.add(new CI(5, "cbba3"), new String("topo5"));
     M.add(new CI(4, "cbba3"), new String("topo4"));
-    M.add(new CI(3, "cbba3"), new String("topo3"));
+    M.add(new CI(13, "cbba3"), new String("topo3"));
     std::cout << "***********corchetes CI******************************************"<<endl;    
     cout << M[Integer{4}]->toString() << endl; //implementar operatror []  //accedo a la valor con la llave 4
     std::cout << "***********corchetes CI******************************************"<<endl;
@@ -596,7 +604,16 @@ int main()
         cout << p.key->toString() << " - ";
         cout << p.value->toString() << endl;
     }
+    
 
+    std::cout << "***********For normal******************************************"
+    << "\n";
+    for (int i =0 ; i<M.size(); i++) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
+    {                 //TENEMOS Q ACER ITERADOR EN EL TreeMap  //llamar al destructor borrar nodos los objetos de ;los nodeos y el comparador
+        cout << M[i]->key->toString() << " - ";
+        cout << M[i]->value->toString() << endl;
+    
+    }
 
     return 0;
 }

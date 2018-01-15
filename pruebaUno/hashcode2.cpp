@@ -68,8 +68,36 @@ public:
 
         return s.compare(q.s);
     }
-
 };
+
+class Integer : public virtual Object, public virtual IComparable{/*la ultima de la jerarquia decimos*/
+    
+        int s;
+    public:
+        Integer(const int &s):s{s}{
+        }
+        string toString()const override {
+            
+            return to_string(s); //devolvemos una copia
+        }
+        bool equals(const Base & q)const override {
+            auto & src = dynamic_cast<const Integer &>(q);
+            return s==src.s;//compara por su direccion de memoria
+        }
+        size_t getHashCode()const override {
+            std::hash<int> hs;
+    
+            return  hs(s);//es un objeto pero lo estqamos llamando como una funcion es raro pero posuible
+        }
+    
+        int compareTo(const IComparable &src) const override{
+    
+            auto & q = dynamic_cast<const Integer &>(src);
+    
+            return s-q.s;
+        }
+    
+    };
 
 //*****************
 struct Pair{
@@ -290,16 +318,39 @@ int main(){
     hm.add(new String("diez"),new String("ten") );
     cout<<hm.toString()<<endl;
 
-    /* for (auto i :hm)
-    {
-        std::cout << i->toString() << '\n';
-    }
- */
+
+
     String s {"siete"};
     auto f1 = hm[s];
     auto f2 = hm[String {"uno"}];
 
     if(f1) cout<<f1->toString()<<endl;
     if(f2) cout<<f2->toString()<<endl;
+
+
+    cout<<"************************INTEGER*******************************"<<endl;
+    HashCode hm1;
+    hm1.add(new Integer(1),new String("one") );
+    hm1.add(new Integer(2),new String("two") );
+    hm1.add(new Integer(3),new String("three") );
+    hm1.add(new Integer(4),new String("four") );
+    hm1.add(new Integer(5),new String("five") );
+    hm1.add(new Integer(6),new String("six") );
+    hm1.add(new Integer(7),new String("seven") );
+    hm1.add(new Integer(8),new String("eicht") );
+    hm1.add(new Integer(9),new String("nine") );
+    hm1.add(new Integer(10),new String("ten") );
+    //hm1.add(new String("veite"),new String("tuelve") );
+    
+    cout<<hm1.toString()<<endl;
+
+    cout<<"************************Buscar INTEGER*******************************"<<endl;    
+    Integer s1 {20};
+    auto f1i = hm1[s1];
+    auto f2i = hm1[String {3}];
+
+    if(f1i) cout<<f1i->toString()<<endl;
+    if(f2i) cout<<f2i->toString()<<endl;
+
     return 0;
 }
