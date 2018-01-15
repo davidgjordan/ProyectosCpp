@@ -233,150 +233,6 @@ class Node
 };
 //********************************END NODE**********************************************
 
-//********************************INI NODEPILA**********************************************
-class NodePila
-{
-  public:
-    Pair *data;
-    NodePila *siguiente;
-    NodePila(Pair *sdata, NodePila *snode = nullptr) : data{sdata}, siguiente{snode}
-    {
-    }
-
-  public:
-    ~NodePila()
-    {
-    }
-    friend class Pila;
-};
-//********************************END nodePILA**********************************************
-
-//********************************Ini PILA**********************************************
-class Pila
-{
-  public:
-    NodePila **ultimo = nullptr;
-    NodePila *primero = nullptr;
-    size_t n = 0;
-    using iterator = Pair *;
-
-  public:
-    void push(Pair *str)
-    {
-        auto nn = new NodePila(str, *ultimo);
-        //ultimo = nn;
-        if (!primero)
-            primero = nn;
-
-        ultimo[n++] = nn;
-    }
-    Pair *pop()
-    {
-        if (!ultimo)
-            return nullptr;
-        auto aux = ultimo;
-        Pair *data = (*aux)->data;
-        ultimo[--n] = (*ultimo)->siguiente;
-        delete aux;
-
-        cout << "Pop: " << data->key->toString() << endl;
-
-        return data;
-    }
-    void print()
-    {
-        auto aux = ultimo;
-        while (aux)
-        {
-            cout << "Pila: " << (*aux)->data->key->toString() << endl;
-            (*aux) = (*aux)->siguiente;
-        }
-    }
-    NodePila *operator[](size_t x) const
-    {
-        return ultimo[x];
-    }
-    iterator /* Pair * */ begin()
-    { //es el i = 0 masd o menos
-        return (ultimo[0]->data);
-    }
-
-    iterator /* Pair ** */ end()
-    {
-        cout << "end" << endl;
-        return ultimo[n]->data; //
-    }
-};
-//********************************END PILA**********************************************
-
-//********************************ini PILA2**********************************************
-class Pila2
-{                             //puede tener listas en listas con object
-    size_t n;                 //numero de elementos que existen actualmente insertados
-    size_t cap;               //capacidad numero de elementos q puede almacenar antes de crecer
-    using iterator = Pair **; //alias cada ves q diga iterator remplazon por Pair **
-  public:
-    Pair **data; ///tiene un array de punteros y a su ves cada puntero es una direccion de memoria de otro objeto
-
-    Pila2(size_t c = 4) : n(0), cap(c), data(new Pair *[c])
-    { //por defecto
-    }
-    ~Pila2()
-    {
-        for (auto i = 0; i < n; i++)
-        {
-            //delete data[i];
-        }
-        delete[] data;
-    }
-
-    size_t size() const
-    {
-        return n;
-    }
-    Pair *operator[](size_t x) const
-    {
-        return data[x];
-    }
-    iterator /* Pair ** */ begin()
-    { //es el i = 0 masd o menos
-    cout<<"begin"<<endl;
-        return &(data[0]);
-    }
-
-    iterator /* Pair ** */ end()
-    {                      //es el i = n.size mas o menos
-    cout<<"end"<<endl;
-    
-        return &(data[n]); //
-    }
-
-    void push(Pair *o)
-    { //sin asterisco pierde el polimorfismo
-        if (cap == n)
-        { //si ya no entrar elementos a mi array cresco
-            grow();
-        }
-        data[n++] = o; //la siguiente ves anado en la pocision n+1
-    }
-    Pair * pop(){
-        return data[0];
-    }
-
-    void grow()
-    {
-        //este metodo crea otro array mas grande
-        auto heap = cap * 2;           //crecere de dos en dos
-        auto ndata = new Pair *[heap]; //ahora sera de doble tamano
-        //ahora copio los punteros de los objetos al nuevo array
-        // con elmetodo memcpy
-        memcpy(ndata, data, cap * sizeof(Pair *)); //copia este numero de punteros
-        cap = heap;
-        delete[] data;
-        data = ndata;
-    }
-};
-//********************************END PILA2**********************************************
 
 //********************************INI TREEMAP**********************************************
 class TreeMap : public virtual Object
@@ -384,16 +240,13 @@ class TreeMap : public virtual Object
     Node *root;
     Node *actual;
     IComparator *comparator;
-    Pila *pila;
-
-    Pila2 pila2;
-    
-    Pair pair[50];
+   
     Pair **pairP;
+    Pair pair[50];
 
     int cantidad = 0;
     using iterator = Pair *;  //alias cada ves q diga iterator remplazon por Pair *
-    using iterator2 = Pair *; //alias cada ves q diga iterator remplazon por Pair *
+
   public:
     ~TreeMap()
     {
@@ -425,55 +278,33 @@ class TreeMap : public virtual Object
     }
 
   public:
-    // iterator /* Pair ** */ begin()
-    // { //es el i = 0 masd o menos
-    //     cout << "begin" << endl;
-    //     llenarVectorInOrden(root);
-
-    //     return &(pair[0]);
-    // }
-    iterator2 /* Pair * */ begin()
+    iterator /* Pair ** */ begin()
     { //es el i = 0 masd o menos
+        cout << "begin" << endl;
         llenarVectorInOrden(root);
-        cout << "begin Arbol " << endl;
-        for (auto p : pila2) 
-        {         
-        cout << "1" << endl;
-        
-            cout <<"key P: "<< p->key->toString() << " - ";
-            cout <<"value P: " <<p->value->toString() << endl;
-        }
-        cout << "2 " << endl;
-        
-        //return &(*pila2[0]);
-        return (pila2.pop());
+        return &(pair[0]);
     }
+
     void llenarVectorInOrden(Node *root)
     {
         auto aux = root;
         if (aux != nullptr)
         {
             llenarVectorInOrden(aux->izq);
-            Pair *p = new Pair{aux->data->key, aux->data->value};
-            // pair[cantidad] = p;
-            // cantidad++;
-            pila2.push(p);
+            Pair p =Pair{aux->data->key, aux->data->value};
+            pair[cantidad] = p;
+            cantidad++;
             llenarVectorInOrden(aux->der);
         }
 
-        // pila->print();
     }
 
-    // iterator /* Pair ** */ end()
-    // {
-    //     cout << "end" << endl;
-    //     return &(pair[cantidad]); //
-    // }
-    iterator2 /* Pair ** */ end()
+    iterator /* Pair ** */ end()
     {
         cout << "end" << endl;
-        return nullptr; //
+        return &(pair[cantidad]); //
     }
+
 
     void add(Object *key, Object *value)
     {
@@ -563,7 +394,7 @@ class TreeMap : public virtual Object
             obj = new CI(num, "prueba");
             //std::cout << "entre cicom3" <<obj->toString()<<"  333"<< '\n';
         }
-        // Mientras sea posible que el valor est� en el �rbol
+        // Mientras sea posible que el valor esta en el arbol
         while (!vacio(actual))
         {
             if (comparator->compare(root->data->key, obj) == 0 && esHoja(root))
@@ -575,7 +406,7 @@ class TreeMap : public virtual Object
             }
             //cout <<" wh"<< '\n';
             if (comparator->compare(actual->data->key, obj) == 0) //// o tendria q hacer con el compare
-            {                                                     // Si el valor est� en el nodo actual
+            {                                                     // Si el valor esta en el nodo actual
                                                                   //   cout <<" 1.0"<< '\n';
                 if (esHoja(actual))
                 {
@@ -723,7 +554,7 @@ int main()
     std::cout << "ini rostring" << '\n';
     cout << M1.toString() << endl;
     std::cout << "ini remove" << '\n';
-    //M1.remove(Integer{0}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
+    M1.remove(Integer{0}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
     std::cout << "ini remove" << '\n';
     //M1.remove(Integer{4}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
     std::cout << "ini tostring" << '\n';
@@ -746,8 +577,10 @@ int main()
     M.add(new CI(5, "cbba3"), new String("topo5"));
     M.add(new CI(4, "cbba3"), new String("topo4"));
     M.add(new CI(3, "cbba3"), new String("topo3"));
-
+    std::cout << "***********corchetes CI******************************************"<<endl;    
     cout << M[Integer{4}]->toString() << endl; //implementar operatror []  //accedo a la valor con la llave 4
+    std::cout << "***********corchetes CI******************************************"<<endl;
+    
     std::cout << "***********ITERATOR CI******************************************"
               << "\n";
     for (auto &p : M) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
@@ -763,39 +596,7 @@ int main()
         cout << p.key->toString() << " - ";
         cout << p.value->toString() << endl;
     }
- 
 
-    Pila2 pila;
-    Integer i{5};
-    String s{"cinco"};
-    Pair p{&i, &s};
-
-    Integer i1{15};
-    String s1{"quicecinco"};
-    Pair p1{&i1, &s1};
-
-    pila.push(&p);
-    pila.push(&p);
-    pila.push(&p);
-    pila.push(&p1);
-    pila.push(&p);
-    pila.push(&p);
-    pila.push(&p1);
-
-    //pila.print();
-    /* pila.pop();
-    pila.pop();
-    pila.pop();
-    pila.pop();
-    pila.pop();
-    pila.pop();
-    pila.pop(); */
-
-    /* for (auto p : pila) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
-    {                   //TENEMOS Q ACER ITERADOR EN EL TreeMap  //llamar al destructor borrar nodos los objetos de ;los nodeos y el comparador
-        cout << p->key->toString() << " - ";
-        cout << p->value->toString() << endl;
-    } */
 
     return 0;
 }
