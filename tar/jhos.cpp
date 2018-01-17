@@ -34,10 +34,12 @@ int main()
 
 
 
-    printMsgJhose(str1, 500);
-    printMsgJhose(str2, 500);
-    printMsgJhose(str3, 500);
-    printMsgJhose(str4, 300);
+    printMsgJhose(str1, 50);
+    printMsgJhose(str2, 150);
+    printMsgJhose(str3, 200);
+    printMsgJhose(str4, 250);
+    printMsgJhose(str1, 300);
+    
 
     return 0;
 }

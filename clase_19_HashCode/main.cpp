@@ -393,10 +393,10 @@ int main()
 
     cout << "***********************" << endl;
 
-      for (Pair & i :hm)
+      /* for (Pair & i :hm)
     {
         std::cout << i.key->toString() << '\n';
-    }
+    } */
     cout << "***********************" << endl;
 
     String s{"siete"};
