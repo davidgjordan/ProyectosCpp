@@ -153,8 +153,14 @@ int main(){
   cout << "message = " << message << endl;
   cout << "egassem = " << strrev( message ) << endl;
 
+  const char * str ;
+  str = new char(50);
+  str = message;
   return 0;
 }
+
+
+
 
 
 

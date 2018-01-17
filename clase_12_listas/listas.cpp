@@ -227,6 +227,8 @@ int main(){
 
 	cout<<"****************ENTRA AL CONSTRUCTOR COPIA******************"<<endl<<endl;		
 	StringLinkedList sll3 = sll; //ENTRA AL CONSTRUCTOR COPIA
+	//StringLinkedList sll3{sll}; //ENTRA AL CONSTRUCTOR COPIA TAMBIEN
+	
 
 	cout<<"****************ENTRA AL OPERADOR =******************"<<endl<<endl;			
 	sll3 = sll;

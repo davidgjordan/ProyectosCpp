@@ -111,6 +111,10 @@ struct HashMapIterator
     size_t cap;
     size_t pos; //apunta a la posicion
     Pair *p;    //apunta siempre al siguietne elemento valido de la lista
+   /*  HashMapIterator(PairLL **data,size_t cap,size_t pos,Pair *pair):data{data},cap{cap},pos{pos}{//ESTE CONSTRUCTPOR OPCIONAL 
+        p = findNext(data, cap, pos);                                                       //POR SI NO SE INSTANCIA BIEN EL PAIR
+        pair = p;
+    } */
     bool operator!=(const HashMapIterator &src)
     {
         return p != src.p;
@@ -155,7 +159,7 @@ class HashCode : public Object
     size_t cap;        //capacidad
     size_t n;          //cantidad de datos
     PairLL **data;     //
-
+    using iterator = HashMapIterator;
   public:
     HashCode(size_t cap = 7, double loadFactor = 0.8) : loadFactor{loadFactor}, n{0}, cap{cap}, data{new PairLL *[cap]}
     {
@@ -303,73 +307,27 @@ class HashCode : public Object
     // //mostara
     //     p.key->toString
     // }
-    Pair *begin()
+
+    
+    iterator begin()
     {
-        cout << "begin1" << endl;        
-        dataAux = data;
-        p = findNext(dataAux, cap, pos);
-        cout << "begin2" << endl;                
-        return p;
+        size_t pos = 0;
+        auto dataAux = data[0];//PairLL*
+        return iterator{data, cap, pos, dataAux->first};
     }
 
-    Pair *end()
+    iterator end()
     {
-        cout << "end1" << endl;
-        return nullptr;
+        size_t pos = cap;
+        return HashMapIterator{data, cap, pos, nullptr};
     }
 
-    //PairLL **data;
-    //size_t cap;
-    size_t pos=0; //apunta a la posicion
-    Pair *p; 
-    PairLL ** dataAux;  
-
-    bool operator!=(const HashCode &src)
-    {
-        cout << "operator distinto" << endl;                
-        return p != src.p;
-    }
-    const Pair &operator*() const
-    {
-        cout << "operator asterisco" << endl;                        
-        return *p;
-    }
-    HashCode &operator++()
-    { //es el prefijo ++i no el postfijo
-        cout << "operator mas mas" << endl;                            
-        if (p->next != nullptr)
-        {
-            p = p->next;
-            return *this;
-        }
-        pos++;
-        p = findNext(dataAux, cap, pos);
-
-        return *this;
-    }
-    static Pair *findNext(PairLL **dataAux, size_t cap, size_t &pos)
-    {
-        cout << "metodo findnext" << endl;                                
-        if (pos >= cap)
-        {
-            return nullptr;
-        }
-        while (pos < cap)
-        {
-            if (dataAux[pos] != nullptr)
-            {
-                return dataAux[pos]->first;
-            }
-            pos++;
-        }
-        return nullptr;
-    }
-
+    
   public: //frien sirve para decir q una funcio o clase es amiga de esta clase
     //  es amiga si tiene acceso a todo lo protected y privado de esta clase
     //con esto le damos acceso a todo
     //friend struct HashMapIterator;
-    using iterator = HashMapIterator;
+    
 };
 
 int main()
@@ -391,13 +349,17 @@ int main()
     hm.add(new String("diez"), new String("ten"));
     cout << hm.toString() << endl;
 
-    cout << "***********************" << endl;
+    cout << "**********fooor*************" << endl;
 
-      /* for (Pair & i :hm)
+    for (auto i :hm)
     {
         std::cout << i.key->toString() << '\n';
+    } 
+    cout << "***************fin fooor********" << endl;
+
+    /* for(Pair & i = iterator.begin();i!= iterator.end(); i++ ){
+
     } */
-    cout << "***********************" << endl;
 
     String s{"siete"};
     auto f1 = hm[s];
@@ -410,3 +372,5 @@ int main()
 
     return 0;
 }
+
+

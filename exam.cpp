@@ -407,9 +407,7 @@ public:
                       count++;
                 }
              *(aux++);
-
             }
-
             return count;
         }
         int get_word_count(){//CONTEO DE PALABRAS
@@ -427,7 +425,6 @@ public:
         }
 
         int get_frequency_by_word( const char * src){//obtener frecuencia por palabra
-            
             return sll.getFrecuenciaWorld(src);
         }
 

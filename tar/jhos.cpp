@@ -2,7 +2,10 @@
 #include <iostream>
 #include <cstring>
 
-#include "windows.h"
+//#include "windows.h"
+#include <unistd.h>
+
+
 
 
 using namespace std;
@@ -16,7 +19,9 @@ void printMsgJhose(const char *msg, int miliseconds)
         res += *msg;
         cout << res << endl;
         if(*msg!=' ')
-        Sleep(miliseconds);
+        //Sleep(miliseconds);
+        usleep(miliseconds*1000);
+
         cout << "\e[A";
         *(msg++);
     }
@@ -27,7 +32,7 @@ void printMsgJhose(const char *msg, int miliseconds)
 int main()
 {
 
-    const char *str1 = "hola mi Jhose Patlicia Belnal Ballon";
+    const char *str1 = "hola mi Jhose Patlicia Belnal Ballon hola mi Jhose Patlicia Belnal Ballonhola mi Jhose Patlicia Belnal Ballon";
     const char *str2 = "que haciendo amol mio?";
     const char *str3 = "estudiando o q haciendo amol?";
     const char *str4 = "te amo mucho mi amol helmosa";

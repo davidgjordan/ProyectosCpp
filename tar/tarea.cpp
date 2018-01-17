@@ -159,8 +159,11 @@ class DefaultComparator : public virtual IComparator
     int compare(Object *i1, Object *i2) const override
     { //ESTE METODO TALVES DEVERIA PEDIR DOS INTEGERS PARA COMPARARLOS ENTRE ELLOS
         //Y NO PEDIR UN ICOMPARATOR
+        //std::cout << "aqui 1" << '\n';
         Integer *int1 = dynamic_cast<Integer *>(i1);
+        //std::cout << "aqui 2" << '\n';        
         Integer *int2 = dynamic_cast<Integer *>(i2);
+        //std::cout << "aqui 3" << '\n';        
         // return int1->compareTo(*int2);
         //return int1->i - int2->i;
         return int1->compareTo(*int2);
@@ -233,6 +236,82 @@ class Node
 };
 //********************************END NODE**********************************************
 
+//********************************INI PILA**********************************************
+class NodePila
+{
+  public:
+    Pair *data;
+    NodePila *sig;
+
+  public:
+    NodePila(Pair *data, NodePila *sig = nullptr) : data{data}, sig{sig} {
+
+    }
+};
+
+struct Pila{
+    NodePila * ultimo = nullptr;
+    public:
+    void push(Pair *data){
+        auto n = new NodePila(data, ultimo);
+        ultimo = n;
+    }
+
+    Pair * pop(){
+        if(!ultimo)return 0;
+        auto aux = ultimo;
+        auto data = aux->data;
+
+        ultimo = ultimo->sig;
+        delete aux;
+        return data;
+    }
+    void print(){
+        auto aux = ultimo;
+        while(aux){
+            cout<<"pila: "<<aux->data->key->toString()<<endl;
+            aux = aux->sig;
+        }
+    }
+};
+//********************************END PILA**********************************************
+
+
+//********************************INI TREEMAPITERATOR**********************************************
+struct TreeMapIterator
+{
+    
+    Pila *pila;
+    Pair *p;    //apunta siempre al siguietne elemento valido de la lista
+
+   // HashMapIterator(PairLL **data,size_t cap,size_t pos,Pair *pair):data{data},cap{cap},pos{pos}{//ESTE CONSTRUCTPOR OPCIONAL 
+   //     p = findNext(data, cap, pos);                                                       //POR SI NO SE INSTANCIA BIEN EL PAIR
+   //     pair = p;
+   // } 
+    bool operator!=(const TreeMapIterator &src)
+    {
+        return p != src.p;
+    }
+    const Pair &operator*() const
+    {
+        return *p;
+    }
+    
+    TreeMapIterator &operator++()
+    { //es el prefijo ++i no el postfijo
+        p = findNext();
+        return *this;
+    }
+    Pair *findNext()
+    {            
+       return pila->pop();
+        
+    }
+
+}; 
+//********************************END TREEMAPITERATOR**********************************************
+
+
 
 //********************************INI TREEMAP**********************************************
 class TreeMap : public virtual Object
@@ -241,11 +320,12 @@ class TreeMap : public virtual Object
     Node *actual;
     IComparator *comparator;
    
-    Pair **pairP;
     Pair pair[50];
+    Pila pila;
 
     int cantidad = 0;
     using iterator = Pair *;  //alias cada ves q diga iterator remplazon por Pair *
+    using iterator2 = TreeMapIterator;  //alias cada ves q diga iterator remplazon por Pair *
 
   public:
     ~TreeMap()
@@ -286,33 +366,48 @@ class TreeMap : public virtual Object
         return &pair[x];
     }
 
-    iterator /* Pair ** */ begin()
+   /*  iterator begin()
     { //es el i = 0 masd o menos
         cout << "begin" << endl;
         llenarVectorInOrden(root);
         return &(pair[0]);
+    } */
+
+    iterator2 begin()
+    { 
+        llenarPila(root);
+        auto aux = pila.ultimo->data;
+        pila.pop();
+
+        return iterator2{&pila,aux};
     }
 
-    void llenarVectorInOrden(Node *root)
+    void llenarPila(Node *root)
     {
         auto aux = root;
         if (aux != nullptr)
         {
-            llenarVectorInOrden(aux->izq);
-            Pair p =Pair{aux->data->key, aux->data->value};
-            pair[cantidad] = p;
-            cantidad++;
-            llenarVectorInOrden(aux->der);
+            llenarPila(aux->izq);
+            Pair *p =new Pair{aux->data->key, aux->data->value};
+            // pair[cantidad] = p;
+            // cantidad++;
+            pila.push(p);      
+            llenarPila(aux->der);
+            
         }
+        
 
     }
+    iterator2 end()
+    {
+        return iterator2{nullptr, nullptr}; //
+    }
 
-    iterator /* Pair ** */ end()
+   /*  iterator end()
     {
         cout << "end" << endl;
         return &(pair[cantidad]); //
-    }
-
+    } */
 
     void add(Object *key, Object *value)
     {
@@ -362,27 +457,22 @@ class TreeMap : public virtual Object
     string toString()
     {
         cout << "termine toString" << endl;
-
-        return inOrden(root);
+        inOrden(root);
+        return "";
     }
-    string inOrden(Node *root)
+    void inOrden(Node *root)
     {
         auto aux = root;
-        string v = "";
-        string k = "";
-        /* si el árbol no está vacío, entonces recórrelo */
         if (aux != nullptr)
         {
             inOrden(aux->izq);
-            v += aux->data->value->toString() + " ";
-            k = aux->data->key->toString();
-
-            cout << "key: " << k << " data: " << v << endl;
+   
+            cout << "key: " << aux->data->key->toString() << " data: " << aux->data->value->toString() << endl;
 
             inOrden(aux->der);
         } /* fin de if */
 
-        return v;
+        //return v;
     }
 
     void remove(Integer iobj)
@@ -511,35 +601,85 @@ class TreeMap : public virtual Object
         std::cout << "termine remove" << '\n';
     }
 
+    bool update(const Object * key,const Object * newValue )
+    { //el q use la funcion elije q acer con el objeto
+        std::cout << "update"<< '\n';
+        
+        actual = root;
+
+        Object *copia;
+
+        Integer * in = dynamic_cast<Integer *>((Object *)key);
+        CI * ci = dynamic_cast<CI *>((Object *)key);        
+        if(in){
+            const int num = in->i;
+            copia = new Integer{num};
+        }else{
+            const int nit = ci->nit;
+            const string city = ci->city;
+            copia = new CI{nit, city};
+        }
+
+        //CIComparator *cicomp = dynamic_cast<CIComparator *>(comparator);
+
+        //std::cout << "1"<< '\n';
+
+        while (!vacio(actual))
+        {
+        //std::cout << "2"<< '\n';
+        
+            if (comparator->compare(copia, actual->data->key) == 0){
+                //std::cout << "3"<< '\n';
+                actual->data->value = nullptr;
+                delete actual->data->value;
+                actual->data->value = (Object *)newValue;
+        
+                return true; // int encontrado
+            }
+            else if (comparator->compare(copia, actual->data->key) > 0){
+                //std::cout << "4"<< '\n';                
+                actual = actual->der; // Seguir
+            }
+            else if (comparator->compare(copia, actual->data->key) < 0){
+                //std::cout << "5"<< '\n';
+                
+                actual = actual->izq;
+            }
+        }
+        //std::cout << "6"<< '\n';        
+        return false; // No esta en arbol
+    }
+
     bool vacio(Node *root)
     {
         return root == nullptr;
     }
     bool esHoja(Node *r) { return !r->der && !r->izq; }
 
-    Object *operator[](const Object &src)
+    Object *operator[](const Object &key)
     { //el q use la funcion elije q acer con el objeto
         actual = root;
-        Object *copia = (Object *)&src;
-        // Todavia puede aparecer, ya que quedan nodos por mirar
-        Integer *in = dynamic_cast<Integer *>(copia);
-        CIComparator *cicomp = dynamic_cast<CIComparator *>(comparator);
-        Object *obj = copia;
-        const int num = in->i;
-        //std::cout << "unoo " <<num<<"  333"<< '\n';
-        if (cicomp)
-        {
-            //std::cout << "entre cicom1" << '\n';
-            obj = new CI(num, "prueba");
-            //std::cout << "entre cicom3" <<obj->toString()<<"  333"<< '\n';
+        
+        Object *copia;
+
+        Integer * in = dynamic_cast<Integer *>((Object *)&key);
+        CI * ci = dynamic_cast<CI *>((Object *)&key);        
+        if(in){
+            const int num = in->i;
+            copia = new Integer{num};
+        }else{
+            const int nit = ci->nit;
+            const string city = ci->city;
+            copia = new CI{nit, city};
         }
+        
         while (!vacio(actual))
         {
-            if (actual->data->key->equals(*obj))
+            if (comparator->compare(copia, actual->data->key) == 0)
                 return actual->data->value; // int encontrado
-            else if (comparator->compare(obj, actual->data->key) > 0)
+            else if (comparator->compare(copia, actual->data->key) > 0)
                 actual = actual->der; // Seguir
-            else if (comparator->compare(obj, actual->data->key) < 0)
+            else if (comparator->compare(copia, actual->data->key) < 0)
                 actual = actual->izq;
         }
         return new String("no hay"); // No est� en �rbol
@@ -562,32 +702,35 @@ int main()
     std::cout << "ini rostring" << '\n';
     cout << M1.toString() << endl;
     std::cout << "ini remove" << '\n';
-    M1.remove(Integer{0}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
+    //M1.remove(Integer{0}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
     std::cout << "ini remove" << '\n';
     //M1.remove(Integer{4}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
     std::cout << "ini tostring" << '\n';
     cout << M1.toString() << endl;
     std::cout << "ini remove" << '\n';
     //M1.remove(Integer{2}); //AQUI SE CUELGA SI LLAMAMOS AL REMOVE FALTA SOLUCIONAR ESTE METODO
+
     std::cout << "ini tostring" << '\n';
     cout << M1.toString() << endl;
+    std::cout << "************************OPERATOR [] INTEGER*****************************"<<endl;    
     cout << M1[Integer{4}]->toString() << endl; //implementar operatror []  //accedo a la valor con la llave 4
+    std::cout << "************************FIN OPERATOR INTEGER []*****************************"<<endl; 
 
-    std::cout << "*****************************************************"
-              << "\n";
 
     CIComparator *n = new CIComparator();
     TreeMap M(new CIComparator());
-    M.add(new CI(15, "cbba1"), new String("topo15"));
-    M.add(new CI(10, "cbba2"), new String("topo10"));
-    M.add(new CI(9, "cbba2"), new String("topo9"));
-    M.add(new CI(6, "cbba2"), new String("topo6"));
-    M.add(new CI(5, "cbba3"), new String("topo5"));
-    M.add(new CI(4, "cbba3"), new String("topo4"));
-    M.add(new CI(13, "cbba3"), new String("topo3"));
-    std::cout << "***********corchetes CI******************************************"<<endl;    
-    cout << M[Integer{4}]->toString() << endl; //implementar operatror []  //accedo a la valor con la llave 4
-    std::cout << "***********corchetes CI******************************************"<<endl;
+    M.add(new CI(15, "cbba1"), new String("NAME15"));
+    M.add(new CI(10, "cbba2"), new String("NAME10"));
+    M.add(new CI(9, "cbba2"), new String("NAME9"));
+    M.add(new CI(6, "cbba2"), new String("NAME6"));
+    M.add(new CI(5, "cbba3"), new String("NAME5"));
+    M.add(new CI(4, "cbba3"), new String("NAME4"));
+    M.add(new CI(13, "cbba3"), new String("NAME3"));
+
+    std::cout << "************************OPERATOR [] CI*****************************"<<endl;    
+    cout << M[CI{5,"cbba5"}]->toString() << endl; //implementar operatror []  //accedo a la valor con la llave 4
+    std::cout << "************************FIN OPERATOR CI []*****************************"<<endl; 
+
     
     std::cout << "***********ITERATOR CI******************************************"
               << "\n";
@@ -608,12 +751,33 @@ int main()
 
     std::cout << "***********For normal******************************************"
     << "\n";
-    for (int i =0 ; i<M.size(); i++) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
+    /* for (int i =0 ; i<M.size(); i++) //SI ARRIBA ES NODE ** ESTO ES LO Q DEVUELVE AL FOR NODE * &
     {                 //TENEMOS Q ACER ITERADOR EN EL TreeMap  //llamar al destructor borrar nodos los objetos de ;los nodeos y el comparador
         cout << M[i]->key->toString() << " - ";
         cout << M[i]->value->toString() << endl;
     
-    }
+    } */
+
+    std::cout << "***********Fin For normal**************************************"<<endl;
+
+    std::cout << "***********Update Integer**************************************"<<endl;
+
+    //M[Integer{4}]->toString() ;
+    cout << M1.toString() << endl;
+    cout<<M1.update(new Integer {0},new String{"ziro"})<<endl;
+    cout << M1.toString() << endl;
+    
+    cout << M1.toString() << endl;
+    cout<<M1.update(new Integer {4},new String{"cuatro Actualizado"})<<endl;
+    cout << M1.toString() << endl;
+
+
+    std::cout << "***********Update CI**************************************"<<endl;
+    cout << M.toString() << endl;
+    cout<<M.update(new CI {5,"cbba5"},new String{"topo5 actual"})<<endl;
+    cout << M.toString() << endl;
+    //M.update(new CI {0,"cbba1"},new String{"ziro"});
+    
 
     return 0;
 }
@@ -625,6 +789,7 @@ int main()
     m.add(new Integer(0), new String("cero"));
     cout<<m.toString()<<endl;
     m.remove(Integer {0});
+    m.update(Integer {0},new String{"ziro"});
     for(auto & p: m){ //TENEMOS Q ACER ITERADOR EN EL TreeMap  //llamar al destructor borrar nodos los objetos de ;los nodeos y el comparador
         cout<<p.key->toString()<<endl;
         cout<<p.value->toString()<<endl;

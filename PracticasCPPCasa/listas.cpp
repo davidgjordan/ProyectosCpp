@@ -11,9 +11,6 @@ class node{
     node * anterior;
     node * siguiente;
     ~node(){
-        // delete data;
-        // delete anterior;
-        // delete siguiente;
     }
 };
 struct ll{

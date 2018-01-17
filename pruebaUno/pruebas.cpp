@@ -18,6 +18,29 @@ char* strrev( char* s ){
 }
 
 
+int & getIntRR(int &n){
+    
+    return n;
+}
+
+int * getIntPP(int *n){
+    
+    return n;
+}
+
+int * getIntPR(int &n){
+    
+    return &n;
+}
+int & getIntRP(int *n){
+    
+    return *n;
+}
+
+
+
+
+
 int main(){
 
     							//para crear otra cadena con este len es len + 1
@@ -30,7 +53,6 @@ int main(){
     strrev(mesage); */
     std::cout << c1 << '\n';
 
-
     auto s = "bolivia";
 	auto a = "argentina";
 	auto c2 = "brasil";
@@ -38,11 +60,6 @@ int main(){
 	cout<<strcmp(s,c2)<<endl;
     cout<<strcmp(s,a)<<endl;
     cout<<'b'-'a'<<endl;
-    
-
-
-
-
 
     cout<<"*******************************"<<endl;
     const char * texto ="primer texto hola como estass";
@@ -57,8 +74,30 @@ int main(){
 
     char * cc = "fsdf";
     cout << *cc << endl;         //primer texto hola como estas
+    
+    
 
     
+    cout<<"*******************************"<<endl;
+    int nu =15;
+    int &num = getIntRR(nu);
+    cout << num << endl;         //primer texto hola como estas
+    
+    cout<<"*******************************"<<endl;
+    int *nu1 =new int(16);
+    int *num1 = getIntPP(nu1);
+    cout << *num1 << endl;         //primer texto hola como estas
+    
+    cout<<"*******************************"<<endl;
+    int *nu2 =new int(17);
+    int *num2 = getIntPR(*nu2);
+    cout << *num2 << endl; 
+
+    cout<<"*******************************"<<endl;
+    int *nu3 =new int(18);
+    int num3 = getIntRP(nu3);
+    cout << num3 << endl; 
+
     
     return 0;
 }
