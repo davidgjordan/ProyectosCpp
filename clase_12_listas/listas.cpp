@@ -221,17 +221,24 @@ int main(){
 	sll.remove(world);
 	sll.print();
 	cout<<"****************fin - remove - print******************"<<endl<<endl;	
-
 	cout<<"****************print - reverse ******************"<<endl;
 	sll.print_reverse();
 	cout<<"****************fin - print******************"<<endl<<endl;	
 
-	// StringLinkedList sll3 = sll; //constructor copia
-	// //sll3 = sll;
-	// // sll3.print();
-	// StringLinkedList sll2 = move(sll);
-	// //sll2.print();
-	// sll.print();
+	cout<<"****************ENTRA AL CONSTRUCTOR COPIA******************"<<endl<<endl;		
+	StringLinkedList sll3 = sll; //ENTRA AL CONSTRUCTOR COPIA
+
+	cout<<"****************ENTRA AL OPERADOR =******************"<<endl<<endl;			
+	sll3 = sll;
+	sll3.print();
+
+	cout<<"****************ENTRA AL CONSTRUCTOR COPIA DE MOVIDA******************"<<endl<<endl;			
+	StringLinkedList sll2 = move(sll);////ENTRA AL CONSTRUCTOR COPIA DE MOVIDA  Y LE QUITE SUS DATOS A SLL
+	sll2.print();
+
+	cout<<"****************VACIO SLL******************"<<endl<<endl;		 
+	sll.print();
+
 	// cout<<"entre "<<sll.last->str <<endl;
 	//StringLinkedList sll4{ new SllNode() , new SllNode()};
     return 0;
