@@ -20,6 +20,36 @@ void show_tuple(const T & data){
  */
 
 
+
+//IMPELEMTAR EN UNA CLASE Y ACER FUNCIONAR CON ESPECIALIZACION PARCIAL
+
+/* template<typename ...T>
+void show_tuple(const T & ...data){
+    show_tuple()
+}
+ */
+
+
+template <typename T , size_t N >
+struct  IterTupla{
+    T & x;
+    
+    /* IterTupla(const T &x, ):x{x}{
+
+    } */
+    
+    void show(){
+        cout<<get<N>(x)<<endl;
+    }
+    template <class T >
+    void show(){
+        
+    }
+
+
+};
+
+
 template<typename T, size_t s>
 void show_tuple(const T & x){
 
@@ -29,16 +59,13 @@ void show_tuple(const T & x){
 
 template<typename T>
 void show_tuple(const T & data){
+    
     constexpr auto s =tuple_size<T>::value;
-        show_tuple<T, s - cont>( data );
+    show_tuple<T, s - 1>( data );
+    
+    IterTupla<T , s-1>iter{(T&)data};
+    iter
 }
-//IMPELEMTAR EN UNA CLASE Y ACER FUNCIONAR CON ESPECIALIZACION PARCIAL
-
-/* template<typename ...T>
-void show_tuple(const T & ...data){
-    show_tuple()
-}
- */
 
 
 int main(){
@@ -63,17 +90,3 @@ int main(){
 }
 
 
-template <typename T , size t >
-
-class Iter{
-
-    Iter(T ){
-
-    }
-     
-    void show(){
-        
-    }
-
-    Iter<T,  N -1>;
-}

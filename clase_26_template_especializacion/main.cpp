@@ -41,6 +41,7 @@ struct CP{
 struct Q{
     int q;
 };
+
 template <>
 struct CP<Q>{
     Q x,y;
