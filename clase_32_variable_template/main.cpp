@@ -9,7 +9,7 @@
 #include <memory> //contiene punteros inteligentes hay tres
 
 using namespace std;
-/* using namespace std::string_literals;
+using namespace std::string_literals;
 
 
 
@@ -26,7 +26,7 @@ T sum(const T & x, const ARGS & ... args){//args q es un conjunto de datos argsr
 }
 
 template<typename T>
-void show(string_view s , const T & x  ){
+void show(string s , const T & x  ){
     std::cout << x <<endl;
 }
 
@@ -34,13 +34,13 @@ template<typename T ,typename U , typename ...ARGS>//repressemtas varios tipos A
 void show(const T & separador ,const U x, const ARGS & ...args ){
 
    //show(separador); //    show(";", 2 , 8 , "hola", true);
-     show(separador);
+    show(separador);
     show(x ,args...); 
     cout<<x<<separador;
     show(separador);
     
     
-} */
+} 
 
 struct Car{
 string brand;
@@ -56,7 +56,7 @@ T * New(const U& ...args){
 int main(){
     
     
-    /* auto p = sum(2,5);
+    auto p = sum(2,5);
     auto q = sum(12,5);
     auto r = sum(2,56,5,6,7);
     auto s = sum(24,56.23,23.1);
@@ -65,8 +65,8 @@ int main(){
     auto u = sum<string>("bye"s,"is"s, "friday"s, "19"s);
     
     show(";", 2 , 8 , "hola", true);
- */
-
+ 
+    cout<<"*******************"<<endl;
 
     auto x = New<Car>("Vw","peta", 1995);
     cout <<x->brand<<endl; //marca
