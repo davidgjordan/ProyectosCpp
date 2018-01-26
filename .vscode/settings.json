@@ -31,6 +31,10 @@
         "typeinfo": "cpp",
         "utility": "cpp",
         "string": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "memory": "cpp",
+        "algorithm": "cpp",
+        "array": "cpp",
+        "slist": "cpp"
     }
 }
