@@ -35,6 +35,7 @@
         "memory": "cpp",
         "algorithm": "cpp",
         "array": "cpp",
-        "slist": "cpp"
+        "slist": "cpp",
+        "unordered_map": "cpp"
     }
 }
