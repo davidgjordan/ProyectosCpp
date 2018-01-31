@@ -36,6 +36,17 @@
         "algorithm": "cpp",
         "array": "cpp",
         "slist": "cpp",
-        "unordered_map": "cpp"
+        "unordered_map": "cpp",
+        "*.ipp": "cpp",
+        "csignal": "cpp",
+        "atomic": "cpp",
+        "chrono": "cpp",
+        "codecvt": "cpp",
+        "condition_variable": "cpp",
+        "functional": "cpp",
+        "mutex": "cpp",
+        "ratio": "cpp",
+        "thread": "cpp",
+        "tuple": "cpp"
     }
 }
