@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cstring>
 
-//#include "windows.h"
+#include "windows.h"
 #include <unistd.h>
 
 
@@ -19,8 +19,8 @@ void printMsgJhose(const char *msg, int miliseconds)
         res += *msg;
         cout << res << endl;
         if(*msg!=' ')
-        //Sleep(miliseconds);
-        usleep(miliseconds*1000);
+        Sleep(miliseconds);
+        //usleep(miliseconds*1000);
 
         cout << "\e[A";
         *(msg++);
@@ -39,8 +39,8 @@ int main()
 
 
 
-    printMsgJhose(str1, 50);
     printMsgJhose(str2, 150);
+    printMsgJhose(str1, 50);
     printMsgJhose(str3, 200);
     printMsgJhose(str4, 250);
     printMsgJhose(str1, 300);

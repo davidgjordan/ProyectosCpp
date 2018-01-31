@@ -1,3 +1,0 @@
-/home/ubuntu/Desktop/ProyectosCpp/clase_siete/bin/CMakeFiles/rebuild_cache.dir
-/home/ubuntu/Desktop/ProyectosCpp/clase_siete/bin/CMakeFiles/edit_cache.dir
-/home/ubuntu/Desktop/ProyectosCpp/clase_siete/bin/CMakeFiles/main.dir

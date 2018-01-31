@@ -103,7 +103,19 @@ int main(){
     cout<<is_palindrome(noSoyPalindromo,equalsCar)<<endl;
 
 
+    int a = 9;
+    int * o = &a;
+    int & c =  *o ;
+    int * dp = &c;
+    int & e = *dp;
+
+
+    cout<< e << endl;
+
+
     return 0;
 
 }
+
+//cuando me devuelven un * int
 
