@@ -27,11 +27,20 @@ class LL{\
     public:\
     LL(){}\
      LL##NodePila * ultimo = nullptr;\
+     LL##NodePila * ultimoCol = nullptr;\
+     LL##NodePila * primeroCol = nullptr;\
     public:\
     void push(T data){\
-        auto n = new LL##NodePila(data,ultimo );\
+        auto n = new LL##NodePila(data,ultimo);\
         ultimo = n;\
-        cout<<"push"<<endl;\
+        auto n2 = new LL##NodePila(data);\
+        if(ultimoCol){\
+            ultimoCol->siguiente = n2;\
+        }\
+        ultimoCol = n2;\
+        if(!primeroCol){\
+            primeroCol = n2;\
+        }\
     }\
     T pop(){\
         if(!ultimo)return 0;\
@@ -39,7 +48,15 @@ class LL{\
         T data = aux->data;\
         ultimo = ultimo->siguiente;\
         delete aux;\
-        cout<<"pop"<<endl;\
+        return data;\
+    }\
+    T popBack(){\
+        auto n = primeroCol;\
+        if(!n)return 0;\
+        primeroCol = primeroCol->siguiente;\
+        T data = n->data;\
+        delete n;\
+        if(!primeroCol) ultimoCol = nullptr;\
         return data;\
     }\
 };
@@ -50,14 +67,31 @@ enum class ECalculatorType{
     DEFAUL,
     BLUE
 };
+enum class OperatorType{
+    BINARY,
+    UNARI
+};
 class IOperator{
+    public:
+    virtual OperatorType getTipo()=0;
 };
 class OperatorBinario : public virtual IOperator{
-  public:  virtual double eval(double &a, double &b)=0;
+  public: virtual double eval(double &a, double &b){
+      return a+b;
+  }
+  OperatorType getTipo(){
+      return OperatorType::BINARY;
+  }
   ~OperatorBinario(){}
 };
 class OperatorUnario : public virtual IOperator{
-  public:  virtual double eval(double &a)=0;
+  public:  
+    virtual double eval(double &a){
+      return a++;
+  }
+   OperatorType getTipo(){
+      return OperatorType::UNARI;
+  }
   ~OperatorUnario(){} 
 };
 class OperatorAdd :public virtual OperatorBinario{
@@ -177,54 +211,78 @@ class ICalculator{
 };
 
 PILA(double, PilaNumbers)
-PILA(string, PilaOperator)
+PILA(string, ColaOperator)
 class CalculatorRPN : public virtual ICalculator{
     PilaNumbers  pilanumbers;
-    PilaOperator pilaoperator;
-    ListaOperadoresExistentes lsoper;
+    ColaOperator colaoperator;
+    ListaOperadoresExistentes listaOper;
     public:
         CalculatorRPN(){
-            lsoper.push("+", new OperatorAdd());
-            lsoper.push("-", new OperatorResta());
-            lsoper.push("*", new OperatorMul());
-            lsoper.push("/", new OperatorDiv());
+            listaOper.push("+", new OperatorAdd());
+            listaOper.push("-", new OperatorResta());
+            listaOper.push("*", new OperatorMul());
+            listaOper.push("/", new OperatorDiv());
         }
         //double num2 = std::stod(auxChar2);
-        double eval(const string& exprexion){
-             string exp = (string)exprexion;
-         string aux;
-         stringstream input(exp);
-         while(getline(input,aux,' ')){
-             try{
-                 if(stod(aux)){
-                     double d =  stod(aux);
-                     cout<<"pilanumbers: "<<d<<endl;
-                     //double d = stod(aux);
-                     pilanumbers.push(d);
+     double eval(const string& exprexion){
+        cout<<"entre"<<endl;
+        string exp = (string)exprexion;
+        string aux;
+        stringstream input(exp);
+        double res=1;
+        
+        while(getline(input,aux,' ')){
+            try{
+                if(stod(aux.c_str())){
+                    double d =  stod(aux.c_str());
+                    cout<<"pilanumbers: "<<d<<endl;
+                    pilanumbers.push(d);
                 }
-             }catch(...){
-                 pilaoperator.push(aux);                
-                 std::cout << "pilaoperator "<<aux << '\n'; 
-             }
-             //aux ="";
-         }
-        double res;
-        while(pilaoperator.ultimo){
-            string key = pilaoperator.pop();
-            if(lsoper.existe(key)){
-                IOperator * oper = lsoper.getOp(key);
-                OperatorBinario * operBinary = dynamic_cast<OperatorBinario *>(*(&oper));
+            }catch(...){
+                colaoperator.push(aux);                
+                //res = calculate(pilanumbers,colaoperator);            
+                std::cout << "colaoperator"<<aux<< '\n'; 
+            }
+          
+        }          
+        return res;
+       
+    }  
+    double calculate(PilaNumbers  pilanumbers ,ColaOperator colaoperator){
+        
+        double res=1;        
+        std::cout << "calculate: "<<pilanumbers.pop()<< '\n'; 
+        while(colaoperator.ultimoCol && pilanumbers.ultimo){
+            string key = colaoperator.popBack();
+            cout<<key<<endl;
+            if(listaOper.existe(key)){
+                IOperator * oper = listaOper.getOp(key);
+
+                if(oper->getTipo() == OperatorType::UNARI){
+                    OperatorUnario * operUna = dynamic_cast<OperatorUnario *>(oper);
+                    double data = pilanumbers.pop();
+                    res = operUna->eval(data);
+                    pilanumbers.push(res);
+                    cout<<"unari: "<<res<<endl;
+                }else if(pilanumbers.ultimo->siguiente ){
+                    double a = pilanumbers.pop();
+                    double b = pilanumbers.pop();
+                    OperatorBinario * operBinar = dynamic_cast<OperatorBinario *>(oper);
+                    res = operBinar->eval(a, b);
+                    pilanumbers.push(res);                        
+                    cout<<"binary: "<<res<<endl;                        
+                }
 
             }else{
                 cout<< "[Error: operator "<<"\'"<<key<<"\'"<<" unknown]"<<endl;
                 res = -1;    
+                break;
             }
         }
         return res;
-    }  
-
+    }
     void add_operator(string & key, IOperator *oper){
-        lsoper.push(key, oper);
+        listaOper.push(key, oper);
     }
 };
 
@@ -250,6 +308,7 @@ int main()
         CalculatorFactory cf;
         ICalculator* calc = cf.create_calculator(ECalculatorType::RPN);
         show(calc->eval("2 3 +")); // 5
+        show(calc->eval("100 12.5 13.7 * -")); // 67.825
 
         /* Pila p;
         p.push(5);
