@@ -62,6 +62,7 @@ class cola{
     c.print();
     cout<<"***********************"<<endl;    
     cout<<c.pop()<<endl;
+    cout<<c.pop()<<endl;
     cout<<"***********************"<<endl;    
     c.print();    
      return 0;

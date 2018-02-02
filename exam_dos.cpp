@@ -21,26 +21,16 @@ struct LL##NodePila{\
     public:\
     ~LL##NodePila(){\
     }\
-    friend class Pila;\
+    friend class LL;\
 };\
 class LL{\
     public:\
     LL(){}\
      LL##NodePila * ultimo = nullptr;\
-     LL##NodePila * ultimoCol = nullptr;\
-     LL##NodePila * primeroCol = nullptr;\
     public:\
     void push(T data){\
         auto n = new LL##NodePila(data,ultimo);\
         ultimo = n;\
-        auto n2 = new LL##NodePila(data);\
-        if(ultimoCol){\
-            ultimoCol->siguiente = n2;\
-        }\
-        ultimoCol = n2;\
-        if(!primeroCol){\
-            primeroCol = n2;\
-        }\
     }\
     T pop(){\
         if(!ultimo)return 0;\
@@ -50,22 +40,55 @@ class LL{\
         delete aux;\
         return data;\
     }\
-    T popBack(){\
-        auto n = primeroCol;\
+};
+//*****************FIN COLA*************************************
+# define  COLA(T, LL)\
+class LL##node{\
+    public:\
+     T data;\
+     LL##node * siguiente;\
+    public:\
+     LL##node(T sdata, LL##node * ssig = nullptr):data{sdata},siguiente{ssig}{\
+     }\
+     ~LL##node(){}\
+     friend class LL;\
+};\
+class LL{\
+public:\
+    LL##node * primero;\
+    LL##node * ultimo;\
+    public:\
+    LL():primero{nullptr}, ultimo{nullptr}{\
+    }\
+    ~LL(){\
+    }\
+    void push(T sdata){\
+        auto n = new LL##node(sdata);\
+        if(ultimo){\
+            ultimo->siguiente = n;\
+        }\
+        ultimo = n;\
+        if(!primero){\
+            primero = n;\
+        }\
+    }\
+    T pop(){\
+        auto n = primero;\
         if(!n)return 0;\
-        primeroCol = primeroCol->siguiente;\
-        T data = n->data;\
+        primero = primero->siguiente;\
+        auto data = n->data;\
         delete n;\
-        if(!primeroCol) ultimoCol = nullptr;\
+        if(!primero) ultimo = nullptr;\
         return data;\
     }\
 };
-//*****************FIN PILA*************************************
 
-enum class ECalculatorType{
+
+
+enum class CalculatorType{
     RPN,
     DEFAUL,
-    BLUE
+    CIENTIFIC
 };
 enum class OperatorType{
     BINARY,
@@ -118,19 +141,20 @@ class OperatorDiv :public virtual OperatorBinario{
          return a/b;
      }    
 };
-class OperatorMax:public virtual OperatorBinario{
+class MaxOperator:public virtual OperatorBinario{
     public:
      double eval(double &a, double &b){
-         return a>b?a:b;
+         return a>b?a:b;  
+
      }    
 };
-class OperatorInc :public virtual OperatorUnario{
+class IncOperator :public virtual OperatorUnario{
      public:
      double eval(double &a){
-         return a++;
+         return ++a;
      }    
 };
-class OperatorSqrt :public virtual OperatorUnario{
+class SqrtOperator :public virtual OperatorUnario{
      public:
      double eval(double &a){
          return sqrt(a);
@@ -207,15 +231,17 @@ struct ListaOperadoresExistentes{
 class ICalculator{
     public:
     virtual double eval(const string& exprexion)=0;
-    virtual void add_operator(string & key, IOperator*)=0;
+    virtual void add_operator(const string & key, IOperator* oper)=0;
 };
 
 PILA(double, PilaNumbers)
-PILA(string, ColaOperator)
+COLA(string, ColaOperator)
 class CalculatorRPN : public virtual ICalculator{
     PilaNumbers  pilanumbers;
     ColaOperator colaoperator;
     ListaOperadoresExistentes listaOper;
+    int conN= 0;
+    int conO= 0;
     public:
         CalculatorRPN(){
             listaOper.push("+", new OperatorAdd());
@@ -225,55 +251,82 @@ class CalculatorRPN : public virtual ICalculator{
         }
         //double num2 = std::stod(auxChar2);
      double eval(const string& exprexion){
-        cout<<"entre"<<endl;
+         
+         while(pilanumbers.ultimo != nullptr){
+            pilanumbers.pop();
+        }
+        while(colaoperator.primero != nullptr){
+            colaoperator.pop();
+        }
+        //cout<<"entre"<<endl;
         string exp = (string)exprexion;
         string aux;
         stringstream input(exp);
-        double res=1;
+        double res=-1;
         
         while(getline(input,aux,' ')){
             try{
                 if(stod(aux.c_str())){
                     double d =  stod(aux.c_str());
-                    cout<<"pilanumbers: "<<d<<endl;
+                    //cout<<"pilanumbers: "<<d<<endl;
                     pilanumbers.push(d);
+                    conN++;
                 }
             }catch(...){
-                colaoperator.push(aux);                
-                //res = calculate(pilanumbers,colaoperator);            
-                std::cout << "colaoperator"<<aux<< '\n'; 
+                colaoperator.push(aux);  
+                conO++;              
+                //std::cout << "colaoperator"<<aux<< '\n'; 
+                res = calculate();            
             }
           
         }          
+        //cout<<"sali"<<endl;        
+        //print();
         return res;
        
-    }  
-    double calculate(PilaNumbers  pilanumbers ,ColaOperator colaoperator){
-        
-        double res=1;        
-        std::cout << "calculate: "<<pilanumbers.pop()<< '\n'; 
-        while(colaoperator.ultimoCol && pilanumbers.ultimo){
-            string key = colaoperator.popBack();
-            cout<<key<<endl;
+    } 
+
+    void print(){
+        while(pilanumbers.ultimo != nullptr){
+            double d = pilanumbers.pop();
+            cout<<"n: "<<d<<" - " ;
+        }
+        cout<<endl;
+        while(colaoperator.primero != nullptr){
+            string d = colaoperator.pop();
+            cout<<"o: "<<d<<" - " ;
+        }
+    } 
+    double calculate(){
+            
+        double res=-1;        
+        //std::cout << "calculate 1: "<</* pilanumbers.pop()<< */ '\n'; 
+        while(colaoperator.primero && pilanumbers.ultimo){
+            //std::cout << "calculate 2: "<</* pilanumbers.pop()<< */ '\n';             
+            string key = colaoperator.pop();
+            //std::cout << "calculate 3: "<</* pilanumbers.pop()<< */ '\n';                             
+            //cout<<key<<endl;
             if(listaOper.existe(key)){
                 IOperator * oper = listaOper.getOp(key);
-
+                //std::cout << "calculate 4: "<</* pilanumbers.pop()<< */ '\n';                             
                 if(oper->getTipo() == OperatorType::UNARI){
                     OperatorUnario * operUna = dynamic_cast<OperatorUnario *>(oper);
                     double data = pilanumbers.pop();
                     res = operUna->eval(data);
                     pilanumbers.push(res);
-                    cout<<"unari: "<<res<<endl;
+                    //cout<<"unari: "<<res<<endl;
                 }else if(pilanumbers.ultimo->siguiente ){
+                    //validar en caso de que no haya dos pop
                     double a = pilanumbers.pop();
                     double b = pilanumbers.pop();
                     OperatorBinario * operBinar = dynamic_cast<OperatorBinario *>(oper);
                     res = operBinar->eval(a, b);
                     pilanumbers.push(res);                        
-                    cout<<"binary: "<<res<<endl;                        
+                    //cout<<"binary: "<<res<<endl;                        
                 }
 
             }else{
+
                 cout<< "[Error: operator "<<"\'"<<key<<"\'"<<" unknown]"<<endl;
                 res = -1;    
                 break;
@@ -281,7 +334,8 @@ class CalculatorRPN : public virtual ICalculator{
         }
         return res;
     }
-    void add_operator(string & key, IOperator *oper){
+    void add_operator(const string & key, IOperator *oper){
+        //cout<<oper->getTipo()<<endl;
         listaOper.push(key, oper);
     }
 };
@@ -289,8 +343,8 @@ class CalculatorRPN : public virtual ICalculator{
 class CalculatorFactory{
 public:
 
-    ICalculator *  create_calculator(const ECalculatorType type){
-        if(type == ECalculatorType::RPN ){
+    ICalculator *  create_calculator(const CalculatorType type){
+        if(type == CalculatorType::RPN ){
             return new CalculatorRPN();
         }
         return nullptr;
@@ -306,9 +360,25 @@ void show(double res){
 int main()
 {
         CalculatorFactory cf;
-        ICalculator* calc = cf.create_calculator(ECalculatorType::RPN);
+        ICalculator* calc = cf.create_calculator(CalculatorType::RPN);
+
         show(calc->eval("2 3 +")); // 5
         show(calc->eval("100 12.5 13.7 * -")); // 67.825
+        show(calc->eval("5 6 7 8 + - * 5 +")); // 50
+        show(calc->eval("6 inc")); // [Error: operator 'inc' unknown]
+        show(calc->eval("7 2 max")); // [Error: operator 'max' unknown]
+        show(calc->eval("7 *")); // [Error: no operand found for '*']
+        show(calc->eval("+")); // [Error: no operand found for '+']
+        show(calc->eval("abc")); // [Error: operator 'abc' unknown]
+        show(calc->eval("12x6")); // [Error: syntax error]
+
+        calc->add_operator("inc", new IncOperator());
+        calc->add_operator("max", new MaxOperator());
+        calc->add_operator("sqrt", new SqrtOperator());
+
+        show(calc->eval("10 5 max inc")); // 11
+        show(calc->eval("25.8 63 max inc sqrt")); // 8
+        
 
         /* Pila p;
         p.push(5);
