@@ -35,7 +35,7 @@ struct CIEq{
 
 ///EL RENDIMIENTO DE ESTE ES O(1)
 int main(){//CIHash provee el codigo hash , CIEq compara para el hasmap no es NECESARIO SI HAY EL OPERATOR ==
-    unordered_map<CI, string , CIHash, CIEq> s;//para nuestro tipos tenemos q sobrecarggar el operador ==
+    unordered_map<CI, string , CIHash, CIEq> s;//para nuestro tipos tenemos q sobrecarggar el operador ()
     s.insert(make_pair(CI{123,"cbba"}, "juan lopez"));
 
     s[CI{456, "lp"}] = "romina perez";
