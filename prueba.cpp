@@ -1,8 +1,5 @@
-//PORSIACASO NO DA, OSEA CREO Q SOLO LOGRA DAR PARA UN 2 + 3 PERO NO TE LO SUMA NI NADA ES COMO 
-//SI TE LO PARCEARA LOS DATOS Y TE LO ANAEDE COMO NODOS TU TENDRIAS Q SUMAR O ALGO ASI
-// PERO PUEDES IR JUGANDO SOBRE ESTA BASE  Y TRATAR DE ACER LO MAS Q
-//CAMBIAR EL NOMBRE DE LAS VARIABLES Y METODOS MOVER LA POCCICION DE LOS METODOS  TRATAR DE BORRAR METODOS Q NO TE SIRVAN ETC
-//POR SIACASO MNO ARROJA LOS RESULTADOS ESPERADOS PERO LA COSA ES Q TENGAS LO MAS ECHO POSIBLE
+//ANDA A LA LINEA 292
+
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -18,62 +15,59 @@ using namespace std;
 
 template <class T>
 class ArbolExpre {
-public:
-ArbolExpre();
+    public:
+    ArbolExpre();
 
-//crea un nuevo arbol binario a partir de un elemento y dos arboles binarios
-ArbolExpre(const T & e, const ArbolExpre<T> & ai=ArbolExpre(), const ArbolExpre<T> & ad=ArbolExpre());
+    //crea un nuevo arbol binario a partir de un elemento y dos arboles binarios
+    ArbolExpre(const T & e, const ArbolExpre<T> & ai=ArbolExpre(), const ArbolExpre<T> & ad=ArbolExpre());
 
-//modifica un ArbolExpre poniendo e como raiz e izqdo y dcho como hijo izquierdo
-// y derecho respectivamente
-void modificar (const T & e, const ArbolExpre<T> & izqdo, const ArbolExpre<T> & dcho);
+    //modifica un ArbolExpre poniendo e como raiz e izqdo y dcho como hijo izquierdo
+    // y derecho respectivamente
+    void modificar (const T & e, const ArbolExpre<T> & izqdo, const ArbolExpre<T> & dcho);
 
-//modica el arbol actual hasta obtener el ArbolExpre vacio
-void vaciar();
+    //modica el arbol actual hasta obtener el ArbolExpre vacio
+    void vaciar();
 
-//Copia el arbol binario actual
-ArbolExpre<T> copiar();
+    //Copia el arbol binario actual
+    ArbolExpre<T> copiar();
 
-//Devuelve el subarbol izquierdo del &#65533;rbol, NULL si est&#65533; vac
-ArbolExpre<T> & izquierdo() const;
+    //Devuelve el subarbol izquierdo del &#65533;rbol, NULL si est&#65533; vac
+    ArbolExpre<T> & izquierdo() const;
 
-//Devuelve el subarbol derecho del &#65533;rbol, NULL si est&#65533; vac
-ArbolExpre<T> & derecho() const;
-//Devuelve el elemento de la raiz
-const T & datoraiz() const;
-T & datoraiz() ;
+    //Devuelve el subarbol derecho del &#65533;rbol, NULL si est&#65533; vac
+    ArbolExpre<T> & derecho() const;
+    //Devuelve el elemento de la raiz
+    const T & datoraiz() const;
+    T & datoraiz() ;
 
-//Indica si el &#65533;rbol binario est&#65533; vacio
-bool esvacio () const;
+    //Indica si el &#65533;rbol binario est&#65533; vacio
+    bool esvacio () const;
 
-//recorre el arbol en preorden
-void preorden() const;
+    //recorre el arbol en preorden
+    void preorden() const;
 
-//muestra el arbol en notacion infija
-string notacion_infija() const;
+    //muestra el arbol en notacion infija
+    string notacion_infija() const;
 
-//Comprueba que el ArbolExpre es extendido
-bool esExtendido () const;
+    //Comprueba que el ArbolExpre es extendido
+    bool esExtendido () const;
 
-private:
-//nodo del arbol binario
-struct Nodo {
-T data;
-ArbolExpre<T> izq;
-ArbolExpre<T> der;
+    private:
+    //nodo del arbol binario
+    struct Nodo {
+    T data;
+    ArbolExpre<T> izq;
+    ArbolExpre<T> der;
 
 //constructor
-Nodo (T e=T(), ArbolExpre<T> iz=ArbolExpre(), ArbolExpre<T> de=ArbolExpre()) {
-data=e;
-izq=iz;
-der=de;
+    Nodo (T e=T(), ArbolExpre<T> iz=ArbolExpre(), ArbolExpre<T> de=ArbolExpre()) {
+        data=e;
+        izq=iz;
+        der=de;
 }
-//destructor
-//~Nodo();
 };
 
-typedef Nodo * PNodo;
-PNodo raiz; //puntero a la raiz del &#65533;rbol binario
+Nodo * raiz; //puntero a la raiz del &#65533;rbol binario
 };
 
 //IMPLEMENTACIONES
@@ -202,7 +196,7 @@ bool es_entero (char a) {
     return true;
 }
 
-float evaluar (const ArbolExpre<char> &a) {
+double evaluar (const ArbolExpre<char> &a) {
     if (a.izquierdo().esvacio() && a.derecho().esvacio()) {
         return a.datoraiz() - '0';
     } else {
@@ -285,7 +279,8 @@ struct calculator: public virtual ICalculator{
     //PARA IR PUSHEANDO LO PARCEADO
     int conN = 0;
     int conO = 0;
-    ArbolExpre <char> a;
+    int posi = 0;
+    ArbolExpre <char> arb;
     void calculate(string expresion){
         //cout<<"entre"<<endl;
         string exp = (string)expresion;
@@ -294,7 +289,14 @@ struct calculator: public virtual ICalculator{
         string signos;
         stringstream input(exp);
         double res=-1;
-        //de esta forma parceso cada numero y signo dependiendo
+        //CREO Q ASI SE CREA UN ARBOL DE EXPRESION Y TENDRIAS Q IR CREANDO UN ARBOL POR CADA EXPRESION Q TE DEN SUPONGO
+        //1 PARAMETRO EXPRESION , TAMANO , POSI NO SE PARA Q SEA SOLO HIZE UN CONTADOR
+        int len = expresion.length();
+        arb = crear_arbol2 (expresion,len,posi);
+        posi++;
+        //#################  Y ESTO DE ABAJO ESTARIA POR DEMAS O NO SE INTENTA VER EN LOS COUTS 
+        //COMO TE DEVUELVE CUANDO LE DAS 4 + 5 UNO DE LOS METODOS DE ABAJO TE DEVUELVE EL CUATRO Y EL OTRO EL 5 MIRA ESO Y LOS SUMAS
+        //DE ESTA FORMA PARCESO CADA NUMERO Y SIGNO DEPENDIENDO
         while(getline(input,aux,' ')){
             try{
                 if(stod(aux.c_str())){
