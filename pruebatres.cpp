@@ -1,21 +1,5 @@
-//DESCARGUE ESTE CODIGO DE INTERNET COPIATE SI QUIERES NO DA DEL TODO PERO AL PARECER ESTE ES EL ARBOL Q SE USA PARA 
-// ESETE TIPO DE ESTRCUTURAS Y MODIFICALO LO MAS Q PUEDAS NI MODO HAY ALGUNAS EXPLICACIONES ACELO
-//CORRER PARA Q VEAS UN POQUITO COMO FUNCIONA 
-//COPIATE Y EMPEZA A MODIFICARLO SI NO  Y TRATA DE ENTENDER LA LOGICA AUQ UN POKITO Y BORRA LO Q NO CONSIDERES NECESARIO
-
-//POR SIACASO MNO ARROJA LOS RESULTADOS ESPERADOS PERO LA COSA ES Q TENGAS LO MAS ECHO POSIBLE
 #include <iostream>
-#include <cstring>
-#include <string>
-#include <math.h>
-#include <fstream> 
-#include <iomanip> 
-#include <sstream>//
-
 using namespace std;
-
-
-//###########################################ARBOL##################################
 
 template <class T>
 class arbin {
@@ -197,7 +181,12 @@ PNodo raiz; //puntero a la raiz del &#65533;rbol binario
             return ext;
         }
 
-//#################METODOS DE INFORMACION CREO#####################
+
+
+/********************************************/
+/* main.cpp
+/********************************************/
+
 
 bool es_entero (char a) {
     if (a=='*' || a=='/' || a=='-' || a=='+')
@@ -273,67 +262,11 @@ notacion_funcional(a.derecho());
     if(raiz=='+' || raiz=='*'|| raiz=='/'||raiz=='-' )
         cout<<")";
 }
-//#################FIN METODOS DE INFORMACION CREO
 
-//##########################################FIN ARBOL###########################33
-
-
-//##########################################INI MI LOGICA ###########################33
-struct ICalculator{
-
-};
-
-struct calculator: public virtual ICalculator{
-    //TENER UN OBJETO DE TIPO ARBOL
-    //PARA IR PUSHEANDO LO PARCEADO
-    int conN = 0;
-    int conO = 0;
-    void calculate(string expresion){
-        //cout<<"entre"<<endl;
-        string exp = (string)expresion;
-        string aux;
-        double numeros;
-        string signos;
-        stringstream input(exp);
-        double res=-1;
-        //de esta forma parceso cada numero y signo dependiendo
-        while(getline(input,aux,' ')){
-            try{
-                if(stod(aux.c_str())){
-                    double d =  stod(aux.c_str());
-                    //pilanumbers.push(d); pusheo al arbol
-                    numeros+=d;
-                    conN++;
-                }
-            }catch(...){
-                signos+=aux+" ";
-                //colaoperator.push(aux);  pusheo al arbol pero como SIGNO
-                conO++;              
-                //res = calculate();            
-            }
-          
-        } 
-        //de esta forma parceso cada numero y signo dependiendo
-        cout<<"sig: "<<signos<<" num: "<<numeros<<endl;
-    }
-};
-
-void eval(calculator &c, const string &  expre){
-
-    c.calculate(expre);
-}
-//##########################################FIN MI LOGICA ###########################33
-
-
-int main(){
-
-
-    calculator c;
-    eval(c, "2 + 5");//7
-    cout<<"******************************"<<endl;
+int main () {
 
     string s;
-    arbin <char> a;//EJEMPLO DE COMO PUSHEAR CREO
+    arbin <char> a;
     char sig = 's';
     int tam;
 
@@ -385,10 +318,12 @@ int main(){
         cout << "Introducir otra cadena? (s/n)? ";
         cin >> sig;
         cout << endl;
-    }
 
-    return 0;
+    } // Final del while
+
+return 1;
 }
+
 /* 
  int main()
 {
