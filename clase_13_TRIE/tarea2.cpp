@@ -7,8 +7,8 @@ using namespace std;
 template<class T>
 struct trieNode{
 
-    T data;
-    char *key = nullptr;
+    T  * second=nullptr;
+    char *first = nullptr;
     trieNode *children[26];   //26 es numero de letras
 
     trieNode(){
@@ -17,41 +17,60 @@ struct trieNode{
 
 public:
     ~trieNode(){
-        delete key;
+        delete first;
+        delete second;
 
+    }
+};
+
+template<class V>
+struct trieNodeR{
+    char *first = nullptr;    
+    V  second;
+    trieNodeR(char *first , V second):first{first}, second{second}{
+    }
+
+public:
+    ~trieNodeR(){
+        delete first;
     }
 };
 
 template <class T>
 struct mah{
 public:
-    T  & s;  //es una referencia al puntero  con  &
-    mah(T  & s):s{s}{
+    T & s;  //es una referencia al puntero  con &
+    mah(T & s):s{s}{
         // delete s;
     }
-    void operator=(T p){
-        s=p;
+    void operator=(const T p){
+        //delete s;
+        s = p;
     }
-    T  operator->(){
+    T operator->(){
     return s;
     }
 };
+
+
+
 
 template <class T>
 class trie{
     trieNode <T> root;
     public:
-    T  operator[](const char * k) const {
-        T aux = find(k);
-        return aux;
-    }
+    using iterator =  trieNode <T> *;
+    /* T & operator[](const char * k) const {
+        T * aux = findR(k);
+        return *aux;
+    }    */
     mah<T> operator[](const char * k){
-        insert(k ,-1);
-        T aux = find(k);
-        return mah<T>{aux};
-    } 
+        
+        insert(k ,-5);
+        return mah<T>(findR(k));
+    }   
 private:
-    void insert( trieNode<T>& n , const char* k, const T  v, int lenk){
+    void insert( trieNode<T>& n , const char* k, const T * v, int lenk){
         if (*k == 0){
             k-=lenk;
             setData(n,v, k);
@@ -67,68 +86,68 @@ private:
         insert(*e, k+1, v, lenk);
     }
 
-    static void setData(trieNode<T>& n, const T v, const char* k){
-        n.data = (T)v;
+    static void setData(trieNode<T>& n, const T * v, const char* k){
+        n.second = (T *)v;
         auto lenk = strlen(k);
         auto nsk =new char [lenk +1];
         memcpy(nsk, k, lenk+1);
-        n.key = nsk;
+        n.first = nsk;
     }
 
-    T find (const trieNode<T>& n, const char* s)const {
+    T & findR (const trieNode<T>& n, const char* s)const {
         if(*s == 0){
-            return n.data;
+            return *n.second;
         }
         auto index= *s-'a';
         auto e = n.children[index];
-        cout<<(char)(index+'a');
+        //cout<<(char)(index+'a');
         if (e == nullptr){
-            return -1;
+            return *n.second;//hjukhiughiuygi
         }
-        return find(*e, s+1);
+        return findR(*e, s+1);
     }
 
-    void print_prefix( const trieNode<T>& nodo, const char *c, int len)const{
-        if(nodo.data > 0){
+    void print_prefix_default( const trieNode<T>& nodo, const char *c, int len)const{
+        if(nodo.second != nullptr){
             bool igual = true;
-            for (int i = 0; i < len ; ++i){
-                if (c[i] != nodo.key[i]){
+            int lenAux = strlen(nodo.first);
+            for (int i = 0; i < len && i < lenAux; ++i){
+                if (c[i] != nodo.first[i]){
                     igual = false;
                     break;
                 }
             }
         	if (igual){
-                cout<<nodo.key<< " - "<<nodo.data<<endl;;
+                cout<<nodo.first<< " - "<<*(nodo.second)<<endl;;
             }
         }else{
 
             for (int i = 0; i < 26; ++i){
                 if (nodo.children[i] != nullptr){
-                    print_prefix(*nodo.children[i], c, len);
+                    print_prefix_default(*nodo.children[i], c, len);
                 }
             }
         }
 
     }
-
-
+//esta es la solucion
 public:
-    trie& insert(const char* k, const T v ){
+    trie& insert(const char* k, const T & v ){
         int lenk = strlen(k);
-        insert(root, k, v, lenk);
+        T * auxv = new T(v);
+        insert(root, k, auxv, lenk);
         return *this;
 
     } 
 
     void print() const{
-        char vec[26];
         printAll(root);
     }
 
     void printAll(const trieNode<T>& nodo) const{
-        if(nodo.data > 0){
-            cout<<nodo.key<<" - ";
-            cout<<nodo.data<<endl;
+        if(nodo.second != nullptr){
+            cout<<nodo.first<<" - ";
+            cout<<*(nodo.second)<<endl;
         }else{
             for (int i = 0; i < 26; ++i){
                 if (nodo.children[i] != nullptr){
@@ -138,18 +157,16 @@ public:
         }
     }
 
-    void print_prefix(const char* c)const{
-		cout<<"1"<<endl;		
+    void print_prefix_default(const char* c)const{
         int len = strlen(c);
-        print_prefix( root, c, len);
-		cout<<"1"<<endl;		
+        print_prefix_default( root, c, len);
 		
     }
     
 
 
-    T find(const char* s) const{
-        return find(root, s);
+    T  & findR(const char* s) const{
+        return findR(root, s);
     }
 
     ~trie(){
@@ -157,7 +174,61 @@ public:
         for (int i = 0; i < 26; ++i){
             delete root.children[i];			
         }
+    }
+
+    iterator find(const string& first){
+        const char * aux = ( const char *)first.c_str();
+        T s = findR(aux);
+        if(s >0){/////////////////>0
+            trieNode <T> * node = new trieNode <T>();
+            node->first = (char *)first.c_str();
+            node->second = new T(s);
+            return node;
+        }
+        return nullptr;
+
+        
+    }
+    iterator begin(){
+        return nullptr;        
+    }
+    iterator end(){
+        return nullptr;
+    } 
+
+    template <typename PROC>
+    void iterate_by_prefixr( const trieNode<T>& nodo, const char *c, int len, PROC p )const{
+        if(nodo.second != nullptr){
+            bool igual = true;
+            int lenAux = strlen(nodo.first);
+            for (int i = 0; i < len && i < lenAux; ++i){
+                if (c[i] != nodo.first[i]){
+                    igual = false;
+                    break;
+                }
+            }
+        	if (igual){
+                //cout<<nodo.first<< " - "<<*(nodo.second)<<endl;
+                trieNodeR<T> nod{nodo.first, *(nodo.second)};
+                p(nod);
+            }
+        }else{
+            for (int i = 0; i < 26; ++i){
+                if (nodo.children[i] != nullptr){
+                    iterate_by_prefixr(*nodo.children[i], c, len, p);
+                }
+            }
+        }
+    } 
+    
+    template <typename PROC>
+    void iterate_by_prefix(const string& prefix, PROC p){
+        int len = prefix.size();
+        const char * aux = ( const char *)prefix.c_str();
+        iterate_by_prefixr( root, aux, len, p);
     }	
+    
+    
 
 
 };
@@ -170,18 +241,30 @@ int main(){
     s.insert("diez", 10);
     s.insert("dieciocho", 18);
     s.insert("diecinueve", 19); 
-    s.insert("veitedos", 22); 
+    s.insert("veintidos", 22); 
     
     s["veinte"] = 20;
     s["veintiuno"] = 21;
+    s["diez"] = 30;
  
 	s.print();
     cout<<"********************"<<endl;
-	s.print_prefix("die");
-    int a;
-    cout<<"a: "<<a<<endl;
+	s.print_prefix_default("vei");
+    cout<<"********************"<<endl;
 
+    s.iterate_by_prefix("die", [](auto& p)
+    {
+      cout << "Key: " << p.first << "; Value: " << (p.second) << "\n";
+    });
 
+    cout<<"********************"<<endl;
+
+    auto it = s.find("veinte");
+    if (it == s.end()) {
+        cerr << "Not found\n"; 
+    }else {
+        cout << *(it->second) << "\n";
+    }
 	return 0;
 }
 
@@ -224,5 +307,5 @@ int main()
   cout << "****\n";
 
   // should get all items as pairs
-  for (auto& i : s) { cout << i.second  << "\n"; }
+  for (auto& i : s) { cout << i->second  << "\n"; }
 } */
