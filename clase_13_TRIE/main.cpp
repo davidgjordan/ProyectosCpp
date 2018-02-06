@@ -1,154 +1,166 @@
 #include <iostream>
-#include <cstring>
 #include <string>
+#include <cstring>
+
 
 using namespace std;
 
-struct trienode{
-	char * data;
-	char * key;
-	trienode * children[26];//albabeto de 26 palabras
-	trienode():data{nullptr}{
-		memset(children , 0 , 26*sizeof(trienode*)); //pone todos los bites de array al valor q yo le diga
-	}
+struct trieNode{
+
+    char *data;
+    char *key = nullptr;
+    trieNode *children[26];   //26 es numero de letras
+
+    trieNode():data{nullptr}{
+        memset(children, 0, 26*sizeof(trieNode*));
+    }
+
 public:
-	~trienode(){
-		delete data;
-		delete key;
-	}
+    ~trieNode(){
+        delete data;
+        delete key;
+    }
 };
 
+class trie{
 
-class TRIE{
-	trienode root;//al instanciarse la clase ya se instanciara esto
-	public :
-		TRIE  &  add(const char * k, const char * v){ //DEVULVE REFERENCIA PARA PODER ACER ADD. ADD.
-			auto lenk = strlen(k);
-		
-			add(root , k , v,lenk);
+private:
+    trieNode root;
 
-			return *this;
-		}
-	public:
-		~TRIE(){
-			for (int i = 0; i < 26; ++i)
-			{
-				delete root.children[i];
-			}
-		}
-	private:
-		void add(trienode & root, const char * k, const char * v, int tamk){
-			if(*k == 0){
-				(k-=tamk);
-				set_data(root, v, k);
-				return;
-			}
-			auto len = strlen(k);
-			auto index = *k - 'a';
-			auto & e = root.children[index];
-			if(e == nullptr){
-				e = new trienode();
-			}
-			add(*e , k+1, v, tamk);
-		}
+    void add( trieNode& n , const char* k, const char* v, int lenk){
+        if (*k == 0){
+            k-=lenk;
+            setData(n,v, k);
+            return;
+        }
 
-		void set_data(trienode &n , const char *v, const char *k){
-			auto len = strlen(v);
-			auto ns =  new char[len+1];
-			memcpy(ns, v, len+1);			
-			n.data = ns;
-			auto lenk = strlen(k);
-			auto nsk =  new char[lenk+1];
-			memcpy(nsk, k, lenk+1);			
-			n.key = nsk;
-		}
+        auto index = *k - 'a';
+        auto& e = n.children[index];
+        if (e == nullptr){
+            e= new trieNode();
+        }
 
-		public :
-		const char * find( const char * s) const {
-			return find(root , s);
-		}
+        add(*e, k+1, v, lenk);
+    }
 
-		private :
 
-		const char * find(const trienode & n, const char * s) const{
-			if(*s == 0){
-				return n.data;
-			}
-			auto index = *s - 'a';
-			auto e = n.children[index];
-			cout<<(char) (index + 'a');
-			if(e == nullptr){
-				return nullptr;
-			}
+    static void setData(trieNode& n, const char* v, const char* k){
+        auto len = strlen(v);
+        auto ns =new char [len +1];
+        memcpy(ns, v, len+1);
+        n.data = ns;
+        auto lenk = strlen(k);
+        auto nsk =new char [lenk +1];
+        memcpy(nsk, k, lenk+1);
+        n.key = nsk;
+    }
 
-			return find(*e, s+1);
-		}
+    const char* find (const trieNode& n, const char* s)const {
+        if(*s == 0){
+            return n.data;
+        }
+        auto index= *s-'a';
+        auto e = n.children[index];
+        cout<<(char)(index+'a');
+        if (e == nullptr){
+            return nullptr;
+        }
 
-	public:
-	//PRINT LTODAS LAS PALABRAS CONST  INGLES ESPANOL
-		void print() const{
-			print_all(root);
-		
-		}
+        return find(*e, s+1);
+    }
 
-		void print_all(const trienode & n)const{
-			if(n.data != nullptr){
-				 cout<<n.key<<" -  ";
-				 cout<<n.data<<endl;
-			}else{
-				for (int i = 0; i < 26; ++i){
+    void print_prefix( const trieNode& nodo, const char *c, int len)const{
 
-					if (n.children[i] != nullptr){//cout<<(char) (i + 'a');
-						print_all(*n.children[i]);
-					}
-				}
-			}
-		}
+        if(nodo.data != nullptr){
+            bool igual = true;
+            for (int i = 0; i < len ; ++i){
+                if (c[i] != nodo.key[i]){
+                    igual = false;
+                    break;
+                }
+            }
+            if (igual){
+                cout<<nodo.key<< " - "<<nodo.data<<endl;;
+            }
+        }else{
 
-		void print_prefix(const char * s)const {
-				 auto lens = strlen(s);
+            for (int i = 0; i < 26; ++i){
+                if (nodo.children[i] != nullptr){
+                    print_prefix(*nodo.children[i], c, len);
+                }
+            }
+        }
 
-			print_prefix_p(root,  s,  lens);
-		}
-	private:
-		void print_prefix_p(const trienode & n, const char * s, int tams)const {
-			if(n.data != nullptr){
-				bool res = true;
-				 for(int i = 0 ; i < tams; i++){
-				 	if(n.key[i] != s[i]){
-				 		res = false;
-				 		break;
-				 	}
-				 }
-				 if(res){
-				 	cout<<n.key<<" - "<<n.data<<endl;
-				 }
+    }
 
-			}else{
-				for (int i = 0; i < 26; ++i){
 
-					if (n.children[i] != nullptr){//cout<<(char) (i + 'a');
-						print_prefix_p(*n.children[i], s,tams);
-					}
-				}
-			}
-		}
+public:
+    trie& add(const char* k, const char* v ){
+        int lenk = strlen(k);
+
+        add(root, k, v, lenk);
+        return *this;
+
+    } 
+
+    void print() const{
+        char vec[26];
+        printAll(root);
+    }
+
+    void printAll(const trieNode& nodo) const{
+        if(nodo.data != 0){
+            cout<<nodo.key<<" - ";
+            cout<<nodo.data<<endl;
+
+        }else{
+
+            for (int i = 0; i < 26; ++i){
+                if (nodo.children[i] != nullptr){
+                    printAll(*nodo.children[i]);
+                }
+            }
+        }
+    }
+
+    void print_prefix(const char* c)const{
+        int len = strlen(c);
+        print_prefix( root, c, len);
+    }
+    
+
+
+    const char* find(const char* s) const{
+        return find(root, s);
+    }
+
+    ~trie(){
+
+        for (int i = 0; i < 26; ++i){
+            delete root.children[i];			
+        }
+    }	
+
 };
 
 int main(){
+    
+    trie x;
+    x.add("perro", "dog")
+    .add("gato", "cat")
+    .add("pato", "duck")
+    .add("gallo", "chicken")
+    .add("gallina", "hen")
+    .add("raton", "mice") 
+    .add("tortugas", "turtle");
 
-	TRIE X;//o(n)  n elementos de la palabra
-
-	X.add("perro", "dog").
-	add("gato", "cat").
-	add("pato", "duck").
-	add("gallo", "chicken").
-	add("gallina", "hen");
+  x.print();
 
 
-
-	X.print_prefix("p");
-
-
-	return 0;
+/*	if (auto n = x.find("tortuga"); n!= nullptr){
+        cout<<n<<endl;
+    }
+*/
+    x.print_prefix("t");
+    return 0;
 }
