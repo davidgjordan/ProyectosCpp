@@ -14,7 +14,7 @@
 using namespace std;
 
 
-
+std::map<string, T>::iterator
 template <typename T, typename P>
 void iterate(const T&  x, P p  ){//itero cualquier cosa q pueda iterar   
     for(typename T::const_iterator i = x.begin() ; i!= x.end(); ++i){//i es list<int>::const_iterator//
