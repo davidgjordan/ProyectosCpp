@@ -1,18 +1,15 @@
-//o tambien si no reutiliza el arbol q hicimos y su data del nodo seria tipo
-//t algo asi mas o menos ya q puedes pushear al arbol numeros o signos
+//ay creo ya implementaciones de arboles de expresiones en internet trata de copiarte
+//alguna y compila o trata de arreglar sobre eso
 #include <iostream>
 #include <cstring>
 #include <string>
+#include <math.h>
+#include <fstream> 
+#include <iomanip> 
+#include <sstream>//
 
 using namespace std;
-struct ICalculator{
 
-};
-struct calculator: public virtual ICalculator{
-    void calculate(string expresion){
-
-    }
-};
 
 template<class T>
 class Node
@@ -25,15 +22,78 @@ class Node
     Node(T *data, Node *izq = nullptr, Node *der = nullptr) : data{data}, izq{izq}, der{der} {}
 };
 
-template<class T>
+/* template<class T>
 struct Arbol{
     Node<T> *root;
     Node<T> *actual;
+    
+    void podar(Node<T> *& nodo){
+        if(nodo){
+            podar(nodo->izq);
+            podar(nodo->izq);
+            delete nodo;
+            nodo=nullptr;
+        }
+    }
 
+    void add(T data){
+
+        Node<T> *nn;
+        Node<T> *padre = nullptr;
+        actual = root;
+
+        nn = new Node<T>(data);
+//        while(!vacio(actual) && )
+
+    }
+
+    bool vacio(Node<T> * root){
+        return root ==nullptr;
+    }
+
+}; */
+
+struct ICalculator{
 
 };
 
-void eval(calculator c, string &  expre){
+struct calculator: public virtual ICalculator{
+
+    int conN = 0;
+    int conO = 0;
+    void calculate(string expresion){
+        //cout<<"entre"<<endl;
+        string exp = (string)expresion;
+        string aux;
+        double numeros;
+        string signos;
+        stringstream input(exp);
+        double res=-1;
+        //de esta forma parceso cada numero y signo dependiendo
+        while(getline(input,aux,' ')){
+            try{
+                if(stod(aux.c_str())){
+                    double d =  stod(aux.c_str());
+                    //pilanumbers.push(d); pusheo al arbol
+                    numeros+=d;
+                    conN++;
+                }
+            }catch(...){
+                signos+=aux+" ";
+                //colaoperator.push(aux);  pusheo al arbol pero como expresion
+                conO++;              
+                //std::cout << "colaoperator"<<aux<< '\n'; 
+                //res = calculate();            
+            }
+          
+        } 
+        //de esta forma parceso cada numero y signo dependiendo
+        cout<<"sig: "<<signos<<" num: "<<numeros<<endl;
+    }
+};
+
+void eval(calculator &c, const string &  expre){
+
     c.calculate(expre);
 }
 
@@ -41,12 +101,12 @@ int main(){
 
 
     calculator c;
-    eval(c, "2 + 5");
+    eval(c, "2 + 5");//7
 
 
     return 0;
 }
-
+/* 
  int main()
 {
     calculator c;
@@ -66,4 +126,4 @@ int main(){
     eval(c, "lastresult"); // 88
     return 0;
 }
- 
+  */
