@@ -1,8 +1,7 @@
-//DESCARGUE ESTE CODIGO DE INTERNET COPIATE SI QUIERES NO DA DEL TODO PERO AL PARECER ESTE ES EL ARBOL Q SE USA PARA 
-// ESETE TIPO DE ESTRCUTURAS Y MODIFICALO LO MAS Q PUEDAS NI MODO HAY ALGUNAS EXPLICACIONES ACELO
-//CORRER PARA Q VEAS UN POQUITO COMO FUNCIONA 
-//COPIATE Y EMPEZA A MODIFICARLO SI NO  Y TRATA DE ENTENDER LA LOGICA AUQ UN POKITO Y BORRA LO Q NO CONSIDERES NECESARIO
-
+//PORSIACASO NO DA, OSEA CREO Q SOLO LOGRA DAR PARA UN 2 + 3 PERO NO TE LO SUMA NI NADA ES COMO 
+//SI TE LO PARCEARA LOS DATOS Y TE LO ANAEDE COMO NODOS TU TENDRIAS Q SUMAR O ALGO ASI
+// PERO PUEDES IR JUGANDO SOBRE ESTA BASE  Y TRATAR DE ACER LO MAS Q
+//CAMBIAR EL NOMBRE DE LAS VARIABLES Y METODOS MOVER LA POCCICION DE LOS METODOS  TRATAR DE BORRAR METODOS Q NO TE SIRVAN ETC
 //POR SIACASO MNO ARROJA LOS RESULTADOS ESPERADOS PERO LA COSA ES Q TENGAS LO MAS ECHO POSIBLE
 #include <iostream>
 #include <cstring>
@@ -18,30 +17,28 @@ using namespace std;
 //###########################################ARBOL##################################
 
 template <class T>
-class arbin {
+class ArbolExpre {
 public:
-//constructoras
-//construye un arbol binario vacio
-arbin();
+ArbolExpre();
 
 //crea un nuevo arbol binario a partir de un elemento y dos arboles binarios
-arbin(const T & e, const arbin<T> & ai=arbin(), const arbin<T> & ad=arbin());
+ArbolExpre(const T & e, const ArbolExpre<T> & ai=ArbolExpre(), const ArbolExpre<T> & ad=ArbolExpre());
 
-//modifica un arbin poniendo e como raiz e izqdo y dcho como hijo izquierdo
+//modifica un ArbolExpre poniendo e como raiz e izqdo y dcho como hijo izquierdo
 // y derecho respectivamente
-void modificar (const T & e, const arbin<T> & izqdo, const arbin<T> & dcho);
+void modificar (const T & e, const ArbolExpre<T> & izqdo, const ArbolExpre<T> & dcho);
 
-//modica el arbol actual hasta obtener el arbin vacio
+//modica el arbol actual hasta obtener el ArbolExpre vacio
 void vaciar();
 
 //Copia el arbol binario actual
-arbin<T> copiar();
+ArbolExpre<T> copiar();
 
 //Devuelve el subarbol izquierdo del &#65533;rbol, NULL si est&#65533; vac
-arbin<T> & izquierdo() const;
+ArbolExpre<T> & izquierdo() const;
 
 //Devuelve el subarbol derecho del &#65533;rbol, NULL si est&#65533; vac
-arbin<T> & derecho() const;
+ArbolExpre<T> & derecho() const;
 //Devuelve el elemento de la raiz
 const T & datoraiz() const;
 T & datoraiz() ;
@@ -55,19 +52,19 @@ void preorden() const;
 //muestra el arbol en notacion infija
 string notacion_infija() const;
 
-//Comprueba que el arbin es extendido
+//Comprueba que el ArbolExpre es extendido
 bool esExtendido () const;
 
 private:
 //nodo del arbol binario
 struct Nodo {
-T info;
-arbin<T> izq;
-arbin<T> der;
+T data;
+ArbolExpre<T> izq;
+ArbolExpre<T> der;
 
 //constructor
-Nodo (T e=T(), arbin<T> iz=arbin(), arbin<T> de=arbin()) {
-info=e;
+Nodo (T e=T(), ArbolExpre<T> iz=ArbolExpre(), ArbolExpre<T> de=ArbolExpre()) {
+data=e;
 izq=iz;
 der=de;
 }
@@ -82,31 +79,31 @@ PNodo raiz; //puntero a la raiz del &#65533;rbol binario
 //IMPLEMENTACIONES
 //construye un arbol binario vacio
         template<class T>
-        arbin<T>::arbin() {
+        ArbolExpre<T>::ArbolExpre() {
             raiz=NULL;
         }
         
         //crea un nuevo arbol binario a partir de un elemento y dos arboles binarios
         template <class T>
-        arbin<T>::arbin(const T & e, const arbin<T> & izqdo, const arbin<T> & decho) {
+        ArbolExpre<T>::ArbolExpre(const T & e, const ArbolExpre<T> & izqdo, const ArbolExpre<T> & decho) {
             raiz= new Nodo(e, izqdo, decho);
         }
         
         
-        //modifica un arbin poniendo e como raiz e izqdo y dcho como hijo izquierdo
+        //modifica un ArbolExpre poniendo e como raiz e izqdo y dcho como hijo izquierdo
         // y derecho respectivamente
         template <class T>
-        void arbin<T>::modificar (const T & e, const arbin<T> & izqdo, const arbin<T> & dcho) {
+        void ArbolExpre<T>::modificar (const T & e, const ArbolExpre<T> & izqdo, const ArbolExpre<T> & dcho) {
             if (!esvacio()) {
-                raiz->info=e;
+                raiz->data=e;
                 raiz->izq=izqdo;
                 raiz->der=dcho;
             }
             else cout << "Error: arbol binario vacio" << endl;
              }
-        //modica el arbol actual hasta obtener el arbin vacio
+        //modica el arbol actual hasta obtener el ArbolExpre vacio
         template <class T>
-        void arbin<T>::vaciar() {
+        void ArbolExpre<T>::vaciar() {
             if (!esvacio()) {
                 izquierdo().vaciar();
                 derecho().vaciar();
@@ -117,72 +114,72 @@ PNodo raiz; //puntero a la raiz del &#65533;rbol binario
         
         //Copia el arbol binario actual
         template <class T>
-        arbin<T> arbin<T>::copiar() {
-            arbin i, d ;
+        ArbolExpre<T> ArbolExpre<T>::copiar() {
+            ArbolExpre i, d ;
             if (!esvacio()) {
             if (!izquierdo().esvacio()) i=izquierdo().copiar();
             if (!derecho().esvacio()) d=derecho().copiar();
-        //raiz=new Nodo(raiz->info, i, d);
+        //raiz=new Nodo(raiz->data, i, d);
         //return raiz;
-                arbin x (raiz->info, i, d);
+                ArbolExpre x (raiz->data, i, d);
                 return x;
             }
         }
         
         //Devuelve el subarbol izquierdo del &#65533;rbol, NULL si est&#65533; vac
         template <class T>
-            arbin<T> & arbin<T>::izquierdo() const {
+            ArbolExpre<T> & ArbolExpre<T>::izquierdo() const {
             return raiz->izq;
         }
         
         //Devuelve el subarbol derecho del &#65533;rbol, NULL si est&#65533; vac
         template <class T>
-            arbin<T> & arbin<T>::derecho() const {
+            ArbolExpre<T> & ArbolExpre<T>::derecho() const {
             return raiz->der;
         }
         //Devuelve el elemento de la raiz
         template <class T>
-        const T & arbin<T>::datoraiz() const {
+        const T & ArbolExpre<T>::datoraiz() const {
         
-            return raiz->info;
+            return raiz->data;
         }
         template <class T>
-            T & arbin<T>::datoraiz() {
-            return raiz->info;
+            T & ArbolExpre<T>::datoraiz() {
+            return raiz->data;
         }
         
         
         //Indica si el &#65533;rbol binario est&#65533; vacio
         template <class T>
-        bool arbin<T>::esvacio () const {
+        bool ArbolExpre<T>::esvacio () const {
             return (raiz==NULL);
         }
         
         template <class T>
-        void arbin<T>::preorden() const {
+        void ArbolExpre<T>::preorden() const {
             if (!esvacio()) {
-                cout << raiz->info << " ";
+                cout << raiz->data << " ";
                 izquierdo().preorden();
                 derecho().preorden();
          }
         }
         
         template <class T>
-        string arbin<T>::notacion_infija()const
+        string ArbolExpre<T>::notacion_infija()const
         {
             string st;
             if(!esvacio())
             {
                 if(!izquierdo().esvacio() && !derecho().esvacio())
-                    return st="("+izquierdo().notacion_infija()+raiz->info+derecho().notacion_infija()+")";
+                    return st="("+izquierdo().notacion_infija()+raiz->data+derecho().notacion_infija()+")";
                 else
-                return st=raiz->info;
+                return st=raiz->data;
             }
         }
         
         ////////////// OKk
         template <class T>
-        bool arbin<T>::esExtendido() const {
+        bool ArbolExpre<T>::esExtendido() const {
             bool ext=false;
             if(esvacio()) {
                 ext=true;
@@ -205,7 +202,7 @@ bool es_entero (char a) {
     return true;
 }
 
-float evaluar (const arbin<char> &a) {
+float evaluar (const ArbolExpre<char> &a) {
     if (a.izquierdo().esvacio() && a.derecho().esvacio()) {
         return a.datoraiz() - '0';
     } else {
@@ -226,11 +223,11 @@ float evaluar (const arbin<char> &a) {
     }
 }
 
-arbin <char> crear_arbol2 (string cadena,int tam, int &pos){
-    arbin<char> izq,der;
+ArbolExpre <char> crear_arbol2 (string cadena,int tam, int &pos){
+    ArbolExpre<char> izq,der;
     if (pos<tam) {
         if (!es_entero(cadena[pos])) {
-        arbin<char> arb(cadena[pos]);
+        ArbolExpre<char> arb(cadena[pos]);
         pos++;
         izq = crear_arbol2 (cadena,tam,pos);
         pos++;
@@ -238,12 +235,12 @@ arbin <char> crear_arbol2 (string cadena,int tam, int &pos){
         arb.modificar(arb.datoraiz(),izq,der);
         return arb;
     } else {
-        return arbin<char> (cadena[pos],izq,der);
+        return ArbolExpre<char> (cadena[pos],izq,der);
     }
     }
 }
 
-void notacion_funcional(const arbin<char> & a){
+void notacion_funcional(const ArbolExpre<char> & a){
 char raiz;
     if (!a.esvacio()) {
         raiz=a.datoraiz();
@@ -288,6 +285,7 @@ struct calculator: public virtual ICalculator{
     //PARA IR PUSHEANDO LO PARCEADO
     int conN = 0;
     int conO = 0;
+    ArbolExpre <char> a;
     void calculate(string expresion){
         //cout<<"entre"<<endl;
         string exp = (string)expresion;
@@ -333,7 +331,7 @@ int main(){
     cout<<"******************************"<<endl;
 
     string s;
-    arbin <char> a;//EJEMPLO DE COMO PUSHEAR CREO
+    ArbolExpre <char> a;//EJEMPLO DE COMO PUSHEAR CREO
     char sig = 's';
     int tam;
 
