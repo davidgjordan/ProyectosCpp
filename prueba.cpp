@@ -1,16 +1,40 @@
-//googlea nomas arbol de expresiones en c++ de una ves
+//o tambien si no reutiliza el arbol q hicimos y su data del nodo seria tipo
+//t algo asi mas o menos ya q puedes pushear al arbol numeros o signos
 #include <iostream>
 #include <cstring>
 #include <string>
 
 using namespace std;
+struct ICalculator{
 
-struct calculator{
+};
+struct calculator: public virtual ICalculator{
+    void calculate(string expresion){
+
+    }
+};
+
+template<class T>
+class Node
+{
+  public:
+    T *data;
+    Node *izq;
+    Node *der;
+  public:
+    Node(T *data, Node *izq = nullptr, Node *der = nullptr) : data{data}, izq{izq}, der{der} {}
+};
+
+template<class T>
+struct Arbol{
+    Node<T> *root;
+    Node<T> *actual;
+
 
 };
 
 void eval(calculator c, string &  expre){
-
+    c.calculate(expre);
 }
 
 int main(){
