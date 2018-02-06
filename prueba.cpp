@@ -1,3 +1,4 @@
+//es lo maximo q pude hacer  si quieres ve no da crhasea al llamar a la funcion para calcular
 #include <iostream>
 #include <cstring>
 #include <string>
