@@ -1,10 +1,8 @@
-//es lo maximo q pude hacer  si quieres ve no da crhasea al llamar a la funcion para calcular
 #include <iostream>
 #include <cstring>
 #include <string>
 #include <math.h>
 #include <fstream> 
-#include <iomanip> 
 #include <sstream>
 
 using namespace std;
@@ -207,10 +205,11 @@ struct calculator: public virtual ICalculator{
                               
             }
         } 
-        //de esta forma parceso cada numero y signo dependiendo
         cout<<"sig: "<<signos<<" num: "<<numeros<<endl; 
-        res = calculateExpr(arb);
-        return res > 0 ? res : 0;
+        //faltaba corregir el llamado a la funcion calculate
+        /* res = calculateExpr(arb);
+        return res > 0 ? res : 0; */
+        return 0;
     }
 
 };
@@ -247,24 +246,3 @@ int main(){
 
     return 0;
 }
-/* 
- int main()
-{
-    calculator c;
-    eval(c, "2 + 5"); //7
-    eval(c, "5 / 0"); //[Error: divide by zero]
-    eval(c, "a = 4"); //4
-    eval(c, "6 - a"); //2
-    eval(c, "b = 5 + a"); //9
-    eval(c, "(3 + b) / a"); //3
-    eval(c, "6 *"); //syntax error
-    eval(c, "1 + 2 * 3"); //7
-    eval(c, "(++a) + 5"); //9
-    eval(c, "a + b"); //14
-    eval(c, "b++"); //9
-    eval(c, "((1 + 5 + b) * (6 + a)) / 2"); // 88
-    eval(c, "d"); //'d' undefined
-    eval(c, "lastresult"); // 88
-    return 0;
-}
-  */
